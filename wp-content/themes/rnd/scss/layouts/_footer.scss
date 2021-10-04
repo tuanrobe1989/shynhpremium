@@ -1,0 +1,93 @@
+.footer{
+    background: $gray;
+    margin-top: 32px;
+    @include breakpoint-up('md') {
+        margin-top: 60px;
+    }
+    .container{
+        @include breakpoint-up('md') {
+            @include flex;
+            @include flex-wrap;
+            @include align-items(flex-end);
+            @include justify-content(center);
+            padding: 40px 0 50px 0;
+            > div{
+                width: 33.333%;
+                box-sizing: border-box;
+                padding: 0 16px;
+                text-align: center;
+            }
+        }
+    }
+    &__copyright{
+        text-align: center;
+        background: $black;
+        color: $white_grey;
+        padding: 2.5rem;
+        @include breakpoint-down('md') {
+            display: none;
+        }
+        @include breakpoint-up('md') {
+
+        }
+    }
+    .widget_custom_html{
+        &:nth-child(1),
+        &:nth-child(2){
+            @include breakpoint-down('md') {
+                display: none;
+            }
+        }
+    }
+    &__promo{
+        @include breakpoint-down('md') {
+            background: $gray;
+            padding: 2.5rem 0;
+            margin: 0 -16px;
+            text-align: center;
+        }
+        &--tit{
+            text-transform: uppercase;
+            strong{
+                font-size: 1.4rem;
+                @include breakpoint-up('md') {
+                    font-size: 1.6rem ;
+                }
+            }
+        }
+        &__around{
+            max-width: 340px;
+            margin: 0 auto;
+        }
+        .form__email{
+            margin-top: 2rem;
+        }
+    }
+}
+.form{
+    &__input{
+        border: 1px solid $grey;
+        @include flex;
+        input{
+            border: none;
+            padding: 0.5rem 1rem;
+            outline: none;
+            flex: 1;
+        }
+        label{
+            padding: 0 1.6rem;
+            background: #fff;
+            position: relative;
+            &:after{
+                content: '';
+                position: absolute;
+                height: 80%;
+                width: 1px;
+                background: $gray;
+                display: block;
+                left: 0;
+                top: 10%;
+            }
+        }
+    }
+}

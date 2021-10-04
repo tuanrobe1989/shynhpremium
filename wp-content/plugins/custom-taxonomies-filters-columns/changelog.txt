@@ -1,0 +1,9 @@
+= 1.0.2 - 2017-04-12 =
+* Fixed: PHP Warning for invalid foreach argument
+
+= 1.0.1 - 2017-04-10 =
+* Fixed: major bug on activation but minor error (early call to get_plugin_data())
+
+= 1.0.0 - 2017-04-10 =
+* CTFC is released
+* Simple one page interface to activate both primary tools (taxonomy filters & taxonomy sortable columns) for each registered CPT and each registerd taxonomy.

@@ -1,0 +1,231 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  z-index: 999;
+  @include breakpoint-down("md") {
+    padding: 8px 0;
+  }
+  a {
+    @include transition_default(0.3s);
+    font-family: $font2;
+  }
+  &__normal {
+    @include breakpoint-up("md") {
+      position: absolute;
+      z-index: 9;
+      text-align: center;
+      .header__menuround {
+        margin: 50px auto 0 auto;
+        display: table;
+        padding: 0 24px;
+        border-bottom: 1px solid $white_grey;
+      }
+    }
+  }
+  &__fixed {
+    border-bottom: 1px solid $gray;
+    .container {
+      @include breakpoint-up("md") {
+      @include flex;
+      @include justify-content(space-between);
+      @include align-items('center');
+        .header__logo {
+          img {
+            width: 100px;
+            height: auto;
+          }
+        }
+      }
+    }
+    .menu-item{
+      a{
+        @include breakpoint-down("lg") {
+          font-size: 1.2rem !important;
+        }
+      }
+    }
+  }
+  .header__menu {
+    @include breakpoint-up("md") {
+      list-style-type: none;
+      @include flex;
+      @include justify-content(center);
+      .current-menu-item {
+      }
+      .menu-item {
+        &.current-menu-item,
+        &:hover {
+          > a {
+            &:after {
+              width: 100%;
+            }
+          }
+        }
+        > a {
+          &:after {
+            content: "";
+            position: absolute;
+            bottom: -1.5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: $black;
+            @include transition_default(0.3s);
+          }
+        }
+        a {
+          text-transform: uppercase;
+          font-size: 1.5rem;
+          font-weight: 500;
+          padding: 16px 24px;
+          display: block;
+          position: relative;
+          @include breakpoint-up("lg") {
+            font-size: 2rem;
+          }
+        }
+      }
+      .menu-item-has-children {
+        position: relative;
+        &:hover {
+          .sub-menu {
+            height: auto;
+          }
+        }
+        .sub-menu {
+          overflow: hidden;
+          position: absolute;
+          width: 320px;
+          text-align: left;
+          padding-top: 20px;
+          height: 0;
+          .menu-item {
+            border: 1px solid $black_light;
+            border-top: 0;
+            background: $gray;
+            &:hover {
+              a {
+                background: $yellow;
+                color: $white;
+              }
+            }
+            &:first-child {
+              border-top: 1px solid $black_light;
+            }
+          }
+        }
+      }
+    }
+  }
+  &__menutab {
+    @include breakpoint-down("md") {
+      width: 40px;
+      height: 40px;
+      display: block;
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      &.actived {
+        span {
+          opacity: 0;
+        }
+        &:before {
+          @include transform(rotate(38deg));
+          top: 9px;
+        }
+        &::after {
+          @include transform(rotate(-38deg));
+          bottom: 9px;
+        }
+      }
+      span,
+      &:before,
+      &:after {
+        content: "";
+        width: 100%;
+        display: block;
+        height: 2px;
+        background: $black;
+        border-radius: 5px;
+        position: relative;
+        @include transition_default(0.5s);
+      }
+      span {
+        margin: 7.5px 0;
+      }
+    }
+  }
+  &__search {
+    @include breakpoint-down("md") {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+    }
+    @include breakpoint-up("md") {
+      display: none;
+    }
+  }
+  &__logo {
+    @include breakpoint-down("md") {
+      img {
+        max-width: 80px;
+        display: block;
+        margin: 0 auto;
+      }
+    }
+    @include breakpoint-up("md") {
+    }
+  }
+  &__menu {
+    @include breakpoint-down("md") {
+      &round {
+        @include transition_default(0.3s);
+        overflow: hidden;
+        position: fixed;
+        left: -100%;
+        height: calc(100% - 82.5px);
+        top: 82.5px;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        &.actived {
+          left: 0;
+          overflow: auto;
+        }
+      }
+      width: 70%;
+      background: $black;
+      position: absolute;
+      height: 100%;
+      .menu-item {
+        border-bottom: 1px solid $black_light;
+        a {
+          text-transform: uppercase;
+          color: #fff;
+          padding: 16px 16px;
+          display: block;
+          font-weight: 700;
+        }
+        .sub-menu {
+          padding-left: 32px;
+          height: 0;
+          overflow: hidden;
+        }
+      }
+      .menu-item-has-children {
+        background-image: url(data:image/png;charset=utf-8;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUBAMAAAB/pwA+AAAAIVBMVEUAAAD////////////////////////////////////////PIev5AAAACnRSTlMAu8zumYh3RDMi3IjsLwAAACpJREFUCNdjwA2YHOBMLgHSmYWCglKGgoKSQGbWKjBYgaSAIiZTAAMxAACRfgfaW2UF8AAAAABJRU5ErkJggg==);
+        background-position: right 8px top 12px;
+        background-repeat: no-repeat;
+        &.actived {
+          background-image: url(data:image/png;charset=utf-8;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUBAMAAAB/pwA+AAAAG1BMVEUAAAD////////////////////////////////rTT7CAAAACHRSTlMAc1qPppx4PzlNTUsAAABLSURBVAjXYyAXsCaASLYAIOHRBGJqtAAJiw4FBgamjmYgk7GjCSjYIQCSk+hQYOpoBDJAwu0VIEGIMEgQKgwShAo3wm1hNmAgHwAAE+ANa4FC/YkAAAAASUVORK5CYII=);
+          > .sub-menu {
+            overflow: auto;
+            height: auto;
+          }
+        }
+      }
+    }
+  }
+}

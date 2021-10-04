@@ -1,0 +1,41 @@
+.blog {
+  &__container {
+    max-width: 980px !important;
+  }
+
+  &__title {
+    line-height: 1.4;
+    letter-spacing: normal;
+    margin: 1rem 0 1.6rem 0;
+  }
+
+  &__content {
+    margin-top: 3.4rem;
+    h2{
+      color: $yellow;
+      border-bottom: 1px solid $yellow;
+      padding-bottom: 1rem;
+      margin-bottom: 1.6rem;
+      strong{
+        color: $yellow;
+      }
+    }
+    p,
+    ul {
+
+      &+h2,
+      &+h3,
+      &+h4 {
+        margin-top: 1.6rem;
+      }
+    }
+
+    ul {
+      padding-left: 1.6rem;
+
+      li {
+        line-height: 1.8;
+      }
+    }
+  }
+}

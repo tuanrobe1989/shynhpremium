@@ -1,0 +1,139 @@
+.contact {
+  &__container {
+    max-width: 1202px !important;
+    margin-bottom: 40px;
+  }
+  &__map {
+    width: 100%;
+    height: 266px;
+    margin-top: 32px;
+    @include breakpoint-up(md) {
+      height: 450px;
+      margin-top: 60px;
+    }
+    @include breakpoint-up(lg) {
+      height: 600px;
+    }
+  }
+  &__info {
+    margin-top: 32px;
+    @include breakpoint-up(lg) {
+      @include flex;
+      @include justify-content(space-between);
+    }
+
+    &__detail {
+    }
+    &__detail-block {
+      margin-top: 12px;
+
+      @include breakpoint-up(lg) {
+        margin: 44px 0;
+      }
+    }
+    &__detail-title {
+      letter-spacing: normal;
+
+      @include breakpoint-up(xs) {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+    }
+    &__detail-info {
+      padding: 6px 6px 6px 21px;
+      background-repeat: no-repeat;
+      background-position: -3px 5px;
+
+      @include breakpoint-up(lg) {
+        font-size: 1.5rem;
+        display: block;
+        margin: 4px 0;
+      }
+
+      &.map-icon {
+        background-image: url(data:image/png;charset=utf-8;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUBAMAAAB/pwA+AAAALVBMVEX///9mZmbCwsJ6enpwcHD19fW4uLijo6OPj4/W1taFhYXr6+vMzMytra2ZmZnfOReOAAAAN0lEQVQI12MgG8w19MjOEgIzBYUzHAVhTIYIBJOdHKZIKkLUpUvQB8z0mxDW0hYAZgJJVqJcCADLrwn5pa6VAAAAAABJRU5ErkJggg==);
+      }
+      &.web-icon {
+        background-image: url(data:image/png;charset=utf-8;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUBAMAAAB/pwA+AAAAMFBMVEX///9mZmZ6enpwcHC4uLjr6+uPj4+jo6P19fXW1tbCwsKtra3MzMyZmZmFhYXg4OADU237AAAAcElEQVQI12MgEXAlKW2FMi8KChpPALN4BQWFYy3BTEdBofUMSQ0g5kNBMQaGiQdATDGhCAYGpgIQU8pZSa0BwjRhERQMaN4AYuYxKAp6LASbdtBho6CQGtgwFulwQUFViG3OxoJyARAmq3v5AWLcCgAgBBPPloplEwAAAABJRU5ErkJggg==);
+      }
+      &.email-icon {
+        background-image: url(data:image/png;charset=utf-8;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUBAMAAAB/pwA+AAAAMFBMVEX///9mZmajo6NwcHDr6+vg4OC4uLitra2FhYXW1taPj4/19fXMzMzCwsKZmZl6enqv6xZjAAAAQUlEQVQI12OgAmARFgQCYwUQU6xYUFBiPpgpnLoQiMBMQYm5T4sFIUxBoxOCUCYQ4GNyG4KZBSA7gpSAQI00dwEA6LUL3/w2mPIAAAAASUVORK5CYII=);
+      }
+      &.cellphone-icon {
+        background-image: url(data:image/png;charset=utf-8;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUBAMAAAB/pwA+AAAAJFBMVEX///9mZmajo6Pr6+vMzMzCwsK4uLiFhYV6enrg4OCZmZlwcHBtGTIWAAAARElEQVQI12MgDbgGw1jMgkJYmAyNEnDmQjE401EBzmQvgDM5NyEMTlRga1KGMNm2KwqKQoWnC8KZDF6NInDlzAZEOBYA82wH2HQiSqgAAAAASUVORK5CYII=);
+      }
+      &.time-icon {
+        background-image: url(data:image/png;charset=utf-8;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUBAMAAAB/pwA+AAAAMFBMVEX///96enpwcHDW1tZmZmbr6+vCwsK4uLiZmZnMzMyPj4+FhYWjo6P19fWtra3g4ODU2m0RAAAAYUlEQVQI12MgGwRqVuyZ4Q5mCiYpCnqUJICY3zQCGJI6waLcCxgYbrqBmVMMGJhlV4OZJaEBRgYPIcxwMWWGh1AFRQYMq6HaWBk4IdqYQYY1QKwzUlzoAbWZt+aMATEuBADTThVwKfBq4AAAAABJRU5ErkJggg==);
+      }
+    }
+  }
+
+  &__info__register {
+    margin-top: 32px;
+
+    @include breakpoint-up(lg) {
+      margin-top: 34px;
+      max-width: 800px;
+      @include flex;
+      @include flex-wrap;
+      margin-left: -23px;
+      margin-left: -23px;
+    }
+  }
+
+  &__info__register__wrapper {
+    width: 100%;
+    margin: 20px 0;
+    @include breakpoint-up(lg) {
+      height: 48px;
+      margin: 0;
+      padding: 0 23px;
+      width: 50%;
+    }
+  }
+
+  &__info__register__area-wrapper {
+    width: 100%;
+
+    @include breakpoint-up(lg) {
+      padding: 0 23px;
+    }
+  }
+
+  &__info__register__input {
+    width: 100%;
+    height: 46px;
+    padding-left: 4px;
+    border: none;
+    outline: none;
+    border-bottom: 2px solid #696969;
+    color: $black;
+    font-size: 1.5rem;
+    &::placeholder {
+      color: $black;
+      font-size: 1.5rem;
+    }
+
+    &.area-input {
+      height: 110px;
+
+      &::placeholder {
+        color: $black;
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  &__info__register__submit {
+    margin: 28px 0;
+    border: 2px solid $grey;
+    background-color: $white;
+    border-radius: 50px;
+    width: 230px;
+    height: 50px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: $black;
+    cursor: pointer;
+  }
+}

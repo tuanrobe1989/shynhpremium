@@ -1,0 +1,62 @@
+# Copyright (C) 2017 Custom Taxonomies Filters & Columns
+# This file is distributed under the same license as the Custom Taxonomies Filters & Columns package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Custom Taxonomies Filters & Columns 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/jst_ctfc\n"
+"POT-Creation-Date: 2017-04-06 16:23+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-04-06 16:28+0200\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.8.8\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fr\n"
+
+#: jst_ctfc.php:129
+msgid "All %s"
+msgstr "Tous les %s"
+
+#: jst_ctfc.php:360 jst_ctfc.php:500
+msgid "%s Settings"
+msgstr "Configuration de %s"
+
+#: jst_ctfc.php:408
+msgid "%s Managment"
+msgstr "Gestion des %s"
+
+#: jst_ctfc.php:415
+msgid "%s Taxonomies Tools"
+msgstr "Outils de taxonomies des %s"
+
+#: jst_ctfc.php:427
+msgid "Use for %s"
+msgstr "Activer pour %s"
+
+#: jst_ctfc.php:460
+msgid "Add filter"
+msgstr "Ajouter un filtre"
+
+#: jst_ctfc.php:460
+msgid "Add column"
+msgstr "Ajouter une colonne"
+
+#: jst_ctfc.php:482
+msgid "Add taxonomies filters and/or sortable columns to %s Custom Post Type"
+msgstr ""
+"Ajouter des colonnes tribales et/ou filtres de taxonomies au Custom Post  "
+"Type %s"
+
+#. Plugin Name of the plugin/theme
+msgid "Custom Taxonomies Filters & Columns"
+msgstr "Filtres et colonnes de taxonomies personnalisées"
+
+#. Description of the plugin/theme
+msgid ""
+"Provides Custom Taxonomies Filters & sortable Columns in Custom Post Types "
+"Edit screen"
+msgstr ""
+"Fournit des colonnes triables et filtres de taxonomies personnalisées à "
+"l'écran Edit"

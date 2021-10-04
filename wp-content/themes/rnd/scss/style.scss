@@ -1,0 +1,29 @@
+@charset "utf-8";
+/*===== BASE =====*/
+@import "base/fonts";
+@import "base/mixins";
+@import "base/base";
+/*===== PARTS =====*/
+@import "layouts/header";
+@import "layouts/aside";
+@import "layouts/footer";
+@import "blocks/banner.block";
+@import "blocks/news.block";
+@import "blocks/logos.block";
+@import "blocks/mainSlider";
+@import "blocks/welcomeSlider";
+@import "blocks/enjoySlider";
+@import "blocks/service.block";
+/*===== PAGES =====*/
+@import "pages/single";
+@import "pages/contact";
+@import "pages/about";
+@import "pages/appointment";
+@import "pages/services";
+// /*===== UTILITIES =====*/
+@import "utilities/animate";
+@import "utilities/hover";
+@import "utilities/fancybox";
+@import "utilities/font-awesome";
+@import "utilities/owl.carousel";
+@import "utilities/_owl.theme.default";
