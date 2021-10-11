@@ -194,5 +194,6 @@ function acf_load_crmvalues_field_choices( $field ) {
     endif;
     return $field;
 }
-add_filter('acf/load_field/name=popup_crm_filed', 'acf_load_crmvalues_field_choices');
-add_filter('acf/load_field/name=general_crm_fields', 'acf_load_crmvalues_field_choices');
+// add_filter('acf/load_field/name=popup_crm_filed', 'acf_load_crmvalues_field_choices');
+// add_filter('acf/load_field/name=general_crm_fields', 'acf_load_crmvalues_field_choices');
+add_filter('acf/load_field/name=aaaaaa', 'acf_load_crmvalues_field_choices');
