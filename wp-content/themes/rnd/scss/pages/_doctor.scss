@@ -1,0 +1,18 @@
+.doctor{
+    &__content{
+
+    }
+    &__thumb, &__contact{
+        padding: 3.2rem;
+        border: 1px solid $grey;
+        border-top: 5px solid $yellow;
+        margin-top: 3.2rem;
+    }
+    &__thumb{
+        margin-top: 0 !important;
+        figure{
+            margin-top: 0 !important;
+           
+        }
+    }
+}

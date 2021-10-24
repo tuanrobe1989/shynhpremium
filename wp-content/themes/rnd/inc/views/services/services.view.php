@@ -3,21 +3,22 @@ $term = get_queried_object();
 ?>
 <section id="service" class="service">
     <div class="container">
-        <?php get_template_part('inc/views/services/aside.view','',array(
+        <?php get_template_part('inc/views/services/aside.view');?>
+        <h1 class="maintit service--tit"><?php single_cat_title() ?></h1>
+        <?php get_template_part('inc/views/services/aside2.view','',array(
             'term' => $term
         )); ?>
-        <h1 class="maintit service--tit"><?php single_cat_title() ?></h1>
         <?php if ( have_posts()):  ?>
         <div class="service__list">
             <?php 
                 while ( have_posts() ) : the_post(); 
                     $post_id = get_the_id();
                     $title = get_the_title();
-                    $thumb = get_the_post_thumbnail_url($post_id,'thumbnail');
+                    $thumb = get_the_post_thumbnail_url($post_id,'medium');
             ?>
                 <div class="service__list__item">
                     <figure class="service__list__item--thumb">
-                        <img src="" 
+                        <img src="<?php echo get_bloginfo('template_directory').'/images/no-image.jpg'; ?>" 
                             data-src="<?php echo $thumb ?>" 
                             title="<?php echo $title ?>"
                             alt="<?php echo $title ?>"

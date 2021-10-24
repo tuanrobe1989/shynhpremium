@@ -6,20 +6,18 @@
         ?>
         <div class="service_block__logos fix_height">
             <?php 
-                foreach($service_block_01 as $category): 
-                    $icon = get_field('icon',$category);
-                    $icon_actived = get_field('icon_actived',$category);
-                    $title = get_field('cover_title',$category);
-                    if(!$title) $title = $category->name;
+                foreach($service_block_01 as $post): setup_postdata($post);
+                    $icon = get_the_post_thumbnail_url($post,'full');
+                    $title = get_the_title();
             ?>
-            <a href="<?php echo get_category_link($category) ?>" class="service_block__logos__item">
+            <a href="<?php the_permalink() ?>" class="service_block__logos__item">
                 <figure>
                     <img 
-                        src="<?php echo imageEncode('/images/no-image.png'); ?>" 
-                        data-src-actived="<?php echo $icon_actived ?>" 
+                        src="<?php echo imageEncode('/images/no-image.jpg'); ?>" 
+                        data-src-actived="<?php echo $icon ?>" 
                         data-src="<?php echo $icon; ?>" 
-                        title="<?php echo $category->name ?>" 
-                        alt="<?php echo $category->name ?>" 
+                        title="<?php echo $title ?>" 
+                        alt="<?php echo $title ?>" 
                         class="service_block__logos__item--img lazy" />
                     <figcaption>
                         <h3 class="service_block__logos__item--tit"><?php echo $title ?></h3>
@@ -27,7 +25,7 @@
                 </figure>
             </a>
             <?php 
-                endforeach;
+                endforeach;wp_reset_postdata();
             ?>
         </div>
         <?php 
@@ -38,7 +36,7 @@
         ?>
             <div class="service_block__girl fix_height">
                 <img 
-                    src="<?php echo imageEncode('/images/no-image.png'); ?>" 
+                    src="<?php echo imageEncode('/images/no-image.jpg'); ?>" 
                     data-src="<?php echo $service_block_image['url']; ?>" 
                     title="<?php echo $service_block_image['title'] ?>" 
                     alt="<?php echo $service_block_image['alt'] ?>" 
@@ -48,24 +46,22 @@
             endif;
         ?>
         <?php 
-            if($service_block_2):
+            if($service_block_02):
         ?>
         <div class="service_block__logos fix_height">
-            <?php 
-                foreach($service_block_2 as $category): 
-                    $icon = get_field('icon',$category);
-                    $icon_actived = get_field('icon_actived',$category);
-                    $title = get_field('cover_title',$category);
-                    if(!$title) $title = $category->name;
+        <?php 
+                foreach($service_block_02 as $post): setup_postdata($post);
+                    $icon = get_the_post_thumbnail_url($post,'full');
+                    $title = get_the_title();
             ?>
-            <a href="<?php echo get_category_link($category) ?>" class="service_block__logos__item">
+            <a href="<?php the_permalink() ?>" class="service_block__logos__item">
                 <figure>
                     <img 
-                        src="<?php echo imageEncode('/images/no-image.png'); ?>" 
-                        data-src-actived="<?php echo $icon_actived ?>" 
+                        src="<?php echo imageEncode('/images/no-image.jpg'); ?>" 
+                        data-src-actived="<?php echo $icon ?>" 
                         data-src="<?php echo $icon; ?>" 
-                        title="<?php echo $category->name ?>" 
-                        alt="<?php echo $category->name ?>" 
+                        title="<?php echo $title ?>" 
+                        alt="<?php echo $title ?>" 
                         class="service_block__logos__item--img lazy" />
                     <figcaption>
                         <h3 class="service_block__logos__item--tit"><?php echo $title ?></h3>
@@ -73,7 +69,7 @@
                 </figure>
             </a>
             <?php 
-                endforeach;
+                endforeach;wp_reset_postdata();
             ?>
         </div>
         <?php 

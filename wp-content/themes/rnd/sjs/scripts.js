@@ -134,7 +134,8 @@ kenEvents.serviceBlock = function () {
             loop: false,
             mouseDrag: true,
             dots: true,
-            startPosition: (actived_cate - 1),
+            // startPosition: (actived_cate - 1),
+            margin:16,
             responsive: {
                 0: {
                     items: 1,
@@ -145,14 +146,49 @@ kenEvents.serviceBlock = function () {
                     items: 2,
                 },
                 767: {
-                    items: 5,
+                    items: 4,
+                    margin:24,
                 },
                 1440: {
-                    items: 8,
+                    items: 6,
+                    margin:32,
                 },
             }
         });
     }
+
+    //Slider Services
+    if (jQuery('.serviceCategory').length > 0) {
+        jQuery('.serviceCategory').owlCarousel({
+            lazyLoad: true,
+            nav: false,
+            loop: false,
+            mouseDrag: true,
+            dots: true,
+            startPosition: (actived_cate - 1),
+            margin:16,
+            responsive: {
+                0: {
+                    items: 1,
+                    center: true,
+                    loop: true,
+                },
+                580: {
+                    items: 2,
+                },
+                767: {
+                    items: 3,
+                    margin:24,
+                },
+                1440: {
+                    items: 4,
+                    margin:32,
+                },
+            }
+        });
+    }
+
+    
 }
 
 function stringToSlug(string) {
