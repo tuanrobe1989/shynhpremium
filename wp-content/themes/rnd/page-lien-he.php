@@ -56,7 +56,7 @@
           <textarea name="message" id="txtarea" cols="30" rows="5" class="contact__info__register__input area-input" placeholder="<?php _e('Nội dung', SHYNH) ?>"></textarea>
         </div>
         <div class="contact__info__register__area-wrapper">
-          <input type="submit" value="<?php _e('ĐĂNGG KÝ', SHYNH) ?>" class="contact__info__register__submit">
+          <input type="submit" value="<?php _e('ĐĂNG KÝ', SHYNH) ?>" class="contact__info__register__submit">
         </div>
       </form>
     </div>

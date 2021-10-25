@@ -11,13 +11,13 @@ $childrens = get_terms($args['term']->taxonomy, array(
     foreach ($childrens as $child) : $i++;
         $active_class = '';
         if ($term->term_id == $child->term_id) :
-            $icon_actived = imageEncodeURL(get_field('icon', $child));
-            $icon = imageEncodeURL(get_field('icon_actived', $child));
+            $icon_actived = get_field('icon', $child);
+            $icon = get_field('icon_actived', $child);
             $active_class = 'actived';
             $actived_cate = $i;
         else :
-            $icon = imageEncodeURL(get_field('icon', $child));
-            $icon_actived = imageEncodeURL(get_field('icon_actived', $child));
+            $icon = get_field('icon', $child);
+            $icon_actived = get_field('icon_actived', $child);
         endif;
         $title = get_field('cover_title', $child);
         if (!$title) $title = $child->name;
