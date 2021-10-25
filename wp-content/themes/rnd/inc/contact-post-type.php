@@ -185,7 +185,6 @@ function add_contact_promotion()
 
 function acf_load_crmvalues_field_choices( $field ) {
     $global_services = get_crm_services();
-    $field['value'] = 0;
     $field['choices'] = array();
     if($global_services):
         foreach($global_services as $service):
@@ -194,6 +193,4 @@ function acf_load_crmvalues_field_choices( $field ) {
     endif;
     return $field;
 }
-// add_filter('acf/load_field/name=popup_crm_filed', 'acf_load_crmvalues_field_choices');
-// add_filter('acf/load_field/name=general_crm_fields', 'acf_load_crmvalues_field_choices');
-add_filter('acf/load_field/name=aaaaaa', 'acf_load_crmvalues_field_choices');
+add_filter('acf/load_field/name=general_crm_fields', 'acf_load_crmvalues_field_choices');

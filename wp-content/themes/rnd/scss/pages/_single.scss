@@ -11,6 +11,9 @@
 
   &__content {
     margin-top: 3.4rem;
+    &.nontop{
+      margin-top: 0;
+    }
     h2{
       color: $yellow;
       border-bottom: 1px solid $yellow;

@@ -105,6 +105,10 @@ a {
   }
 }
 
+.yellow{
+  color: $yellow;
+}
+
 h1,
 .h1 {
   font-size: 3.4rem;
@@ -203,6 +207,34 @@ h3,
 
     @include breakpoint-up("md") {
       font-size: 3.5rem;
+    }
+  }
+}
+
+
+h4,
+.h4 {
+  font-size: 1.3rem;
+  font-family: Philosopher;
+
+  @include breakpoint-up("xs") {
+    font-size: 2rem;
+  }
+
+  @include breakpoint-up("md") {
+    font-size: 2.5rem;
+  }
+
+  strong {
+    font-size: 1.3rem;
+    font-family: Philosopher;
+
+    @include breakpoint-up("xs") {
+      font-size: 2rem;
+    }
+
+    @include breakpoint-up("md") {
+      font-size: 2.5rem;
     }
   }
 }
@@ -536,4 +568,8 @@ img {
 
 input, textarea, select{
   font-family: inherit !important;
+}
+
+.mt-line{
+	margin-top: 3.2rem;
 }

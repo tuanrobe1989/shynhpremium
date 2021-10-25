@@ -1,6 +1,6 @@
 <section class="news-news">
   <div class="container news-news__container">
-    <h1 class="news-news__title maintit">NEWS</h1>
+    <h1 class="news-news__title maintit"><?php _e('Tin Tức','shynh') ?></h1>
     <div class="news-news__list">
     <?php
     if (have_posts()) : while (have_posts()) : the_post();

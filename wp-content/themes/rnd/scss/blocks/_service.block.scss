@@ -66,10 +66,12 @@
 
             &--tit {
                 font-size: 2rem;
-
-                @include breakpoint-up(md) {
-                    margin-top: 16px;
-                }
+                text-align: center;
+                padding: 1rem 0;
+                line-height: 1.5;
+                display: block;
+                width: 100%;
+                text-transform: uppercase;
             }
 
             &--img {
@@ -88,6 +90,26 @@
                     background: $yellow;
                 }
             }
+        }
+    }
+}
+
+.serviceCategory{
+    margin: 5rem 0 3rem 0;
+    &__item{
+        &--img{
+            border: 2px solid $grey;
+            width: 100%;
+            height: auto;
+        }
+        &--tit{
+            display: block;
+            width: 100%;
+            padding: 1rem 0;
+            line-height: 1.5;
+            text-align: center;
+            font-size: 2.5rem;
+            text-transform: uppercase;
         }
     }
 }

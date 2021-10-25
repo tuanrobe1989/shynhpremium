@@ -135,7 +135,7 @@ function services_block_func($args){
         get_template_part('inc/short-code-view/services_block.view','',array(
             'postdata' => $post,
             'service_block_01' => get_field('service_block_01',$post->ID),
-            'service_block_2' => get_field('service_block_2',$post->ID),
+            'service_block_02' => get_field('service_block_2',$post->ID),
             'service_block_image'=> get_field('service_block_image',$post->ID),
         ));
         return ob_get_clean();
