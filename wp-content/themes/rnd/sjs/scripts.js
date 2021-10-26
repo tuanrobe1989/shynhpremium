@@ -71,6 +71,49 @@ kenEvents.curlinkTo = function () {
         }
     }
 }
+
+kenEvents.contactForm = function () {
+    jQuery('.contactForm').submit(function (e) {
+        var formID = jQuery(this).attr('id');
+        var formCurrent = jQuery('#' + formID);
+        var contactForm__name = formCurrent.find('.contactForm__name').val();
+        var contactForm__phone = formCurrent.find('.contactForm__phone').val();
+        var contactForm__service = formCurrent.find('.contactForm__service').val();
+        var contactForm__category = currentForm.find(".contactForm__category").val();
+        var nonce = formCurrent.find('.nonce').val();
+
+        if (contactForm__name == "") {
+            currentForm.find(".contactForm__name").addClass("required");
+        } else {
+            currentForm.find(".contactForm__name").removeClass("required");
+        }
+
+        if (phoneVail(contactForm__phone) == false) {
+            currentForm.find(".contactForm__phone").addClass("required");
+        } else {
+            currentForm.find(".contactForm__phone").removeClass("required");
+        }
+
+        if (contactForm__service == "") {
+            currentForm.find(".contactForm__service").addClass("required");
+        } else {
+            currentForm.find(".contactForm__service").removeClass("required");
+        }
+
+        if (
+            contactForm__name &&
+            phoneVail(contactForm__phone) &&
+            emailVail(contactForm__email) &&
+            nonce &&
+            formID &&
+            contactForm__category
+        ) {
+            alert('AAAAAAAAAAAAAAAAAAA');
+
+         }
+    })
+}
+
 kenEvents.popup = function () {
     jQuery('.kpopup__bg').click(function () {
         jQuery(this).closest('.kpopup').removeClass('animate__animated').removeClass('animate__fadeIn');
@@ -135,7 +178,7 @@ kenEvents.serviceBlock = function () {
             mouseDrag: true,
             dots: true,
             // startPosition: (actived_cate - 1),
-            margin:16,
+            margin: 16,
             responsive: {
                 0: {
                     items: 1,
@@ -147,11 +190,11 @@ kenEvents.serviceBlock = function () {
                 },
                 767: {
                     items: 4,
-                    margin:24,
+                    margin: 24,
                 },
                 1440: {
                     items: 6,
-                    margin:32,
+                    margin: 32,
                 },
             }
         });
@@ -166,7 +209,7 @@ kenEvents.serviceBlock = function () {
             mouseDrag: true,
             dots: true,
             startPosition: (actived_cate - 1),
-            margin:16,
+            margin: 16,
             responsive: {
                 0: {
                     items: 1,
@@ -178,17 +221,17 @@ kenEvents.serviceBlock = function () {
                 },
                 767: {
                     items: 3,
-                    margin:24,
+                    margin: 24,
                 },
                 1440: {
                     items: 4,
-                    margin:32,
+                    margin: 32,
                 },
             }
         });
     }
 
-    
+
 }
 
 function stringToSlug(string) {
@@ -257,6 +300,7 @@ jQuery(document).ready(function () {
     kenEvents.popup();
     kenEvents.fixHeight();
     kenEvents.serviceBlock();
+    kenEvents.contactForm();
     jQuery('.slider__carousel').owlCarousel({
         items: 1,
         lazyLoad: true,

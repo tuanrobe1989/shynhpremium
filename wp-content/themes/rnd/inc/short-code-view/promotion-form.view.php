@@ -2,7 +2,7 @@
 <div class="footer__promo">
     <div class="footer__promo__around">
         <p class="footer__promo--tit"><strong><?php _e('đăng ký nhận khuyến mãi', SHYNH) ?></strong></p>
-        <form action="" method="post" class="contactForm">
+        <form action="" method="post" class="contactForm" id="contact_footer">
             <div class="form__input">
                 <input type="text" name="form_email" id="contactForm__name" class="contactForm__name" placeholder="<?php _e('Vui lòng họ tên', SHYNH) ?>" />
                 <label for="contactForm__name">
@@ -45,6 +45,8 @@
             endif;
             ?>
             <input type="submit" name="contactForm__submit" id="contactForm__submit" class="button contactForm__submit" value="<?php _e('Đăng ký','shynh') ?>"/>
+            <input type="hidden" name="nonce" class="nonce" value="<?php echo wp_create_nonce('add_contact_nonce') ?>" />
+            <input type="hidden" class="contactForm__category" value="" />
         </form>
     </div>
 </div>
