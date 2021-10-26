@@ -68,7 +68,7 @@ function add_contact_columns($columns)
     $columns['name'] = __('Họ Tên', 'shynh');
     $columns['phone'] = __('Số Điện Thoại', 'shynh');
     $columns['crm_service_id'] = __('Service Id', 'shynh');
-    $columns['service_name'] = __('Service Name', 'shynh');
+    $columns['contact_title'] = __('Form Title', 'shynh');
     return $columns;
 }
 
@@ -84,8 +84,8 @@ function value_contact_columns($column, $post_id)
     if ('crm_service_id' === $column) {
         echo ucwords(get_post_meta($post_id, 'crm_service_id', true));
     }
-    if ('service_name' === $column) {
-        echo ucwords(get_post_meta($post_id, 'service_name', true));
+    if ('contact_title' === $column) {
+        echo ucwords(get_post_meta($post_id, 'contact_title', true));
     }
 }
 
@@ -95,7 +95,7 @@ function contact_sortable_columns($columns)
     $columns['name'] = 'name';
     $columns['phone'] = 'phone';
     $columns['crm_service_id'] = 'crm_service_id';
-    $columns['service_name'] = 'service_name';
+    $columns['contact_title'] = 'contact_title';
     return $columns;
 }
 
@@ -117,61 +117,70 @@ function contact_orderby($query)
         $query->set('orderby', 'meta_value');
         $query->set('meta_key', 'crm_service_id');
     endif;
-    if ('service_name' === $query->get('orderby')) :
+    if ('contact_title' === $query->get('orderby')) :
         $query->set('orderby', 'meta_value');
-        $query->set('meta_key', 'service_name');
+        $query->set('meta_key', 'contact_title');
     endif;
 }
 
 
-add_action("wp_ajax_add_contact_promotion", "add_contact_promotion");
-add_action("wp_ajax_nopriv_add_contact_promotion", "add_contact_promotion");
+add_action("wp_ajax_add_contact", "add_contact");
+add_action("wp_ajax_nopriv_add_contact", "add_contact");
 
-function add_contact_promotion()
+function add_contact()
 {
     ob_start();
-    if (!wp_verify_nonce($_REQUEST['nonce'], "add_contact_promotion_nonce")) {
+    if (!wp_verify_nonce($_REQUEST['nonce'], "add_contact_nonce")) {
         exit("Some wrong !");
     }
     if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-        $result['type'] = 'false';
-        $name = $_REQUEST["name"];
-        $phone = trim($_REQUEST["phone"]);
+        //Convert  Param
+        $result['type'] = 0;
+        $result['msg'] = '';
+        $name = wp_strip_all_tags($_REQUEST["name"]);
+        $phone = wp_strip_all_tags($_REQUEST["phone"]);
         $phone = preg_replace('/^[ \t]*[\r\n]+/m', '', $phone);
-        $service_crm_id = trim($_REQUEST["service_id"]);
-        $service_crm_title = trim($_REQUEST["service_title"]);
+        $service_crm_id = wp_strip_all_tags($_REQUEST["service_id"]);
+        $title = wp_strip_all_tags($_REQUEST["title"]);
+        $term_id = wp_strip_all_tags($_REQUEST["term_id"]);
         $args = array(
             'post_title' => $name . ' | ' . $phone,
             'post_type' => 'contact'
         );
         $post_id = wp_insert_post($args);
         if ($post_id) :
-            wp_set_object_terms(
-                $post_id,
-                array(50),
-                'contact-category'
-            );
             $result['post_id'] = $post_id;
+            //Register Term Post
+            if ($term_id) : $term_id = $term_id * 1;
+                wp_set_object_terms(
+                    $post_id,
+                    array($term_id),
+                    'contact-category'
+                );
+            endif;
+            //Update Post Meta
             update_field('name', sanitize_text_field($name), $post_id);
             update_field('phone', sanitize_text_field($phone), $post_id);
             if (API_FLAG == TRUE) :
                 $servicecrm = get_crm_services(true, $service_crm_id);
-
-                $data = array(
-                    "firstname" => sanitize_text_field($name),
-                    "mobile" => sanitize_text_field($phone),
-                    "service_label" => $servicecrm['service_label'],
-                    "service_register_date" => date("Y-m-d"),
-                    "source" => "WEBSITE shynh"
-                );
-                $result['crm_service_registration'] = save_service_registration($data);
-                update_field('crm_service_id', sanitize_text_field($service_crm_id), $post_id);
-                update_field('service_name', sanitize_text_field($service_crm_title), $post_id);
+                if ($servicecrm) :
+                    $data = array(
+                        "firstname" => sanitize_text_field($name),
+                        "mobile" => sanitize_text_field($phone),
+                        "service_label" => $servicecrm['service_label'],
+                        "service_register_date" => date("Y-m-d"),
+                        "source" => "WEBSITE SHYNH PREMIUM"
+                    );
+                    $result['crm_service_registration'] = save_service_registration($data);
+                    update_field('crm_service_id', sanitize_text_field($service_crm_id), $post_id);
+                    update_field('contact_title', sanitize_text_field($title), $post_id);
+                endif;
             endif;
-            $result['type'] = 'success';
-            if (!isset($_COOKIE['submited_promotion_20_10'])) :
-                setcookie('submited_promotion_20_10', true, (time() + 259200), '/');
-            endif;
+            $result['msg'] = 'Cám ơn bạn đăng ký, <br>chúng tôi sẽ liên hệ hỗ trợ bạn ngay!';
+            $result['status'] = 1;
+        else :
+            $result['msg'] = __('Có lỗi xảy ra trong quá trình xử lý, bạn hảy thử lại nhé', 'shynh');
+            $result['status'] = 2;
         endif;
         $result = json_encode($result);
         echo $result;
@@ -183,14 +192,75 @@ function add_contact_promotion()
     ob_end_flush();
 }
 
-function acf_load_crmvalues_field_choices( $field ) {
+function acf_load_crmvalues_field_choices($field)
+{
     $global_services = get_crm_services();
     $field['choices'] = array();
-    if($global_services):
-        foreach($global_services as $service):
+    if ($global_services) :
+        foreach ($global_services as $service) :
             $field['choices'][$service->service_id] = $service->service_name;
         endforeach;
     endif;
     return $field;
 }
 add_filter('acf/load_field/name=general_crm_fields', 'acf_load_crmvalues_field_choices');
+
+
+// ADD THANKS POPUP
+add_action('wp_footer', 'add_footer_popup_func');
+function add_footer_popup_func()
+{
+    $popup_title = get_bloginfo('name');
+    ob_start();
+?>
+    <div id="common-popup" class="kpopup">
+        <span class="kpopup__bg"></span>
+        <div class="container">
+            <div class="kpopup__round contact__round">
+                <span class="kpopup__buttonclose lazy" data-bg="<?php bloginfo('template_directory') ?>/images/icon-close.png"></span>
+                <div class="contact__thanks">
+                    <div class="kpopup__title"><?php echo $popup_title; ?></div>
+                    <div class="kpopup__content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php
+    echo ob_get_clean();
+}
+
+
+//Add Popup Common
+add_action('wp_footer', 'main_popup_func');
+function main_popup_func()
+{
+    $popup_title = get_bloginfo('name');
+    ob_start();
+?>
+    <div id="main__popup" class="kpopup animate__animated animate__fadeIn main__popup">
+        <span class="kpopup__bg"></span>
+        <div class="container">
+            <div class="kpopup__round contact__round">
+                <span class="kpopup__buttonclose lazy" data-bg="<?php bloginfo('template_directory') ?>/images/icon-close.png"></span>
+                <div class="contact__thanks">
+                    <div class="kpopup__content">
+                        <form action="" method="post" class="contactForm" id="contact__popup" name="contact__popup">
+                            <div class="form__input">
+                                <input type="text" name="contactForm__name" id="contactForm__name" class="contactForm__name contactForm__input" placeholder="<?php _e('Vui lòng họ tên', SHYNH) ?>" />
+                            </div>
+                            <div class="form__input">
+                                <input type="text" name="contactForm__phone" id="contactForm__phone" class="contactForm__phone contactForm__input" placeholder="<?php _e('Vui lòng nhập số điện thoại', SHYNH) ?>" />
+                            </div>
+                            <input type="submit" name="contactForm__submit" id="contactForm__submit" class="button contactForm__submit" value="<?php _e('Đăng ký', 'shynh') ?>" />
+                            <input type="hidden" name="nonce" class="nonce" value="<?php echo wp_create_nonce('add_contact_nonce') ?>" />
+                            <input type="hidden" name="contactForm__category" class="contactForm__category" value="20" />
+                            <input type="hidden" name="popup__id" class="popup__id" value="main-popup" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php
+    echo ob_get_clean();
+}

@@ -1,3 +1,4 @@
+"use strict";
 var kenEvents = Object;
 kenEvents.current_width = function () {
     return jQuery(window).width();
@@ -74,43 +75,71 @@ kenEvents.curlinkTo = function () {
 
 kenEvents.contactForm = function () {
     jQuery('.contactForm').submit(function (e) {
+
         var formID = jQuery(this).attr('id');
         var formCurrent = jQuery('#' + formID);
+        var popup = '';
+        if (formCurrent.find('.popup__id').length > 0) {
+            popup = formCurrent.find('.popup__id').val();
+            if (popup) {
+                popup = jQuery('#' + popup);
+            }
+        }
+        var contactForm__tag = formCurrent.attr('name');
         var contactForm__name = formCurrent.find('.contactForm__name').val();
         var contactForm__phone = formCurrent.find('.contactForm__phone').val();
         var contactForm__service = formCurrent.find('.contactForm__service').val();
-        var contactForm__category = currentForm.find(".contactForm__category").val();
+        var contactForm__title = '';
+        var contactForm__category = formCurrent.find(".contactForm__category").val();
         var nonce = formCurrent.find('.nonce').val();
 
         if (contactForm__name == "") {
-            currentForm.find(".contactForm__name").addClass("required");
+            formCurrent.find(".contactForm__name").addClass("required");
         } else {
-            currentForm.find(".contactForm__name").removeClass("required");
+            formCurrent.find(".contactForm__name").removeClass("required");
         }
 
         if (phoneVail(contactForm__phone) == false) {
-            currentForm.find(".contactForm__phone").addClass("required");
+            formCurrent.find(".contactForm__phone").addClass("required");
         } else {
-            currentForm.find(".contactForm__phone").removeClass("required");
+            formCurrent.find(".contactForm__phone").removeClass("required");
         }
 
-        if (contactForm__service == "") {
-            currentForm.find(".contactForm__service").addClass("required");
-        } else {
-            currentForm.find(".contactForm__service").removeClass("required");
-        }
 
         if (
             contactForm__name &&
             phoneVail(contactForm__phone) &&
-            emailVail(contactForm__email) &&
             nonce &&
-            formID &&
-            contactForm__category
+            formID
         ) {
-            alert('AAAAAAAAAAAAAAAAAAA');
-
-         }
+            console.log(global_params.ajaxurl);
+            formCurrent.find('.contactForm__submit').prop('disabled', true);
+            jQuery.ajax({
+                type: "post",
+                dataType: "json",
+                url: global_params.ajaxurl,
+                data: {
+                    action: 'add_contact',
+                    name: contactForm__name,
+                    phone: contactForm__phone,
+                    nonce: nonce,
+                    service_id: contactForm__service,
+                    title: contactForm__title,
+                    term_id: contactForm__category
+                },
+                success: function (response) {
+                    formCurrent.find('.contactForm__input').val('');
+                    if (response.status == 1) {
+                        popup.find('.kpopup__content').html(nl2br(response.msg));
+                        popup.addClass('animate__animated animate__fadeIn');
+                    }else{
+                        popup.find('.kpopup__content').html(nl2br(response.msg));
+                        popup.addClass('animate__animated animate__fadeIn');
+                    }
+                }
+            });
+        }
+        return false;
     })
 }
 
@@ -232,6 +261,11 @@ kenEvents.serviceBlock = function () {
     }
 
 
+}
+
+function nl2br (str, is_xhtml) {   
+    var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';    
+    return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1'+ breakTag +'$2');
 }
 
 function stringToSlug(string) {

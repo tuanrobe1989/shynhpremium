@@ -15,7 +15,7 @@
  */
 define('SHYNH', 'SHYNH');
 global $global_services;
-define('API_CRM_ROOT','https://shynhhouse.cloudpro.vn/api/WebsiteApi.php');
+define('API_CRM_ROOT', 'https://shynhhouse.cloudpro.vn/api/WebsiteApi.php');
 define('API_CRM_ACCESS_KEY', 'i2Ue96CiSxyWTTY3');
 define('API_FLAG', TRUE);
 global $home_id;
@@ -25,7 +25,7 @@ define('THEME_VERSION', $theme->Version);
 include get_theme_file_path('/inc/common.php');
 include get_theme_file_path('/inc/short-code-post-type.php');
 include get_theme_file_path('/inc/short-code.php');
-include get_theme_file_path( '/inc/contact-post-type.php' );
+include get_theme_file_path('/inc/contact-post-type.php');
 
 add_action('wp_head', 'custom_wp_head');
 add_action('admin_head', 'custom_wp_head');
@@ -60,7 +60,13 @@ function add_theme_scripts()
     wp_enqueue_style('style', get_template_directory_uri() . '/css/style.min.css', array(), THEME_VERSION, 'all');
     wp_deregister_script('jquery');
     wp_enqueue_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js', array(), null, TRUE);
-    wp_enqueue_script('script', get_template_directory_uri() . '/js/scripts.min.js', array('jquery'), 1.1, true);
+    wp_register_script('script', get_template_directory_uri() . '/js/scripts.min.js', array('jquery'), 1.1, true);
+    $global_params = array(
+        'themes_url' => get_template_directory_uri(),
+        'ajaxurl' => admin_url( 'admin-ajax.php')
+    );
+    wp_localize_script('script', 'global_params', $global_params);
+    wp_enqueue_script('script');
 }
 
 add_action('wp_enqueue_scripts', 'add_theme_scripts');
@@ -228,7 +234,7 @@ add_filter('request', 'rudr_change_term_request', 1, 1);
 
 function rudr_change_term_request($query)
 {
-    if(!$query) return $query;
+    if (!$query) return $query;
     $tax_name = 'category'; // specify you taxonomy name here, it can be also 'category' or 'post_tag'
 
     // Request for child terms differs, we should make an additional check
