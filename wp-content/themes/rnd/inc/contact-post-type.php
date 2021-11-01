@@ -143,6 +143,7 @@ function add_contact()
         $service_crm_id = wp_strip_all_tags($_REQUEST["service_id"]);
         $title = wp_strip_all_tags($_REQUEST["title"]);
         $term_id = wp_strip_all_tags($_REQUEST["term_id"]);
+        $fcookie = wp_strip_all_tags($_REQUEST["fcookie"]);
         $args = array(
             'post_title' => $name . ' | ' . $phone,
             'post_type' => 'contact'
@@ -178,6 +179,7 @@ function add_contact()
             endif;
             $result['msg'] = 'Cám ơn bạn đăng ký, <br>chúng tôi sẽ liên hệ hỗ trợ bạn ngay!';
             $result['status'] = 1;
+            do_action('kpopup_after_susscess',$fcookie);
         else :
             $result['msg'] = __('Có lỗi xảy ra trong quá trình xử lý, bạn hảy thử lại nhé', 'shynh');
             $result['status'] = 2;
@@ -190,6 +192,17 @@ function add_contact()
 
     die();
     ob_end_flush();
+}
+// echo "<pre>";
+//     print_r($_COOKIE);
+// echo "</pre>";
+// unset($_COOKIE['main__popup']);
+// setcookie('main__popup', '', time() - 3600, '/');
+add_action('kpopup_after_susscess', 'set_cookie_mainpopup',10,);
+function set_cookie_mainpopup($param){
+    if (!isset($_COOKIE[$param])) :
+        setcookie($param, true, (time() + 259200), '/');
+    endif;
 }
 
 function acf_load_crmvalues_field_choices($field)
@@ -237,7 +250,7 @@ function main_popup_func()
     $popup_title = get_bloginfo('name');
     ob_start();
 ?>
-    <div id="main__popup" class="kpopup animate__animated animate__fadeIn main__popup">
+    <div id="main__popup" data-action="common-popup" data-cookie="main__popup" class="kpopup main__popup" data-autoload="6000">
         <span class="kpopup__bg"></span>
         <div class="container">
             <div class="kpopup__round contact__round">
@@ -253,7 +266,7 @@ function main_popup_func()
                             </div>
                             <input type="submit" name="contactForm__submit" id="contactForm__submit" class="button contactForm__submit" value="<?php _e('Đăng ký', 'shynh') ?>" />
                             <input type="hidden" name="nonce" class="nonce" value="<?php echo wp_create_nonce('add_contact_nonce') ?>" />
-                            <input type="hidden" name="contactForm__category" class="contactForm__category" value="20" />
+                            <input type="hidden" name="contactForm__category" class="contactForm__category" value="26" />
                             <input type="hidden" name="popup__id" class="popup__id" value="main-popup" />
                         </form>
                     </div>

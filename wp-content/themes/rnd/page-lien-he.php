@@ -39,23 +39,23 @@
           <p class="contact__info__detail-info cellphone-icon">1900989800</p>
         </div>
       </div>
-      <form action="" method="POST" class="contact__info__register">
+      <form action="" method="POST" class="contactForm contact__info__register" id="contact__popup" name="contact__popup">
         <div class="contact__info__register__area-wrapper">
           <h2 class="h3">Nhận Thông Tin Khuyến Mãi & <br>Góp Ý Dịch Vụ</h2>
         </div>
-        <div class="contact__info__register__area-wrapper">
-          <input type="text" class="contact__info__register__input" placeholder="<?php _e('Họ và Tên', SHYNH) ?>">
+        <div class="form__input contact__info__register__area-wrapper">
+          <input type="text" name="contactForm__name" id="contactForm__name" class="contact__info__register__input contactForm__input contactForm__name" placeholder="<?php _e('Họ và Tên', SHYNH) ?>">
         </div>
-        <div class="contact__info__register__area-wrapper">
-          <input type="text" class="contact__info__register__input" placeholder="<?php _e('Số điện thoại', SHYNH) ?>">
+        <div class="form__input contact__info__register__area-wrapper">
+          <input type="text" name="contactForm__phone" id="contactForm__phone" class="contact__info__register__input contactForm__input contactForm__phone" placeholder="<?php _e('Số điện thoại', SHYNH) ?>">
         </div>
-        <div class="contact__info__register__area-wrapper">
-          <input type="text" class="contact__info__register__input" placeholder="<?php _e('E-mail', SHYNH) ?>">
+        <div class="form__input contact__info__register__area-wrapper">
+          <input type="text" name="contactForm__email" id="contactForm__email" class="contact__info__register__input contactForm__input  contactForm__email" placeholder="<?php _e('E-mail', SHYNH) ?>">
         </div>
-        <div class="contact__info__register__area-wrapper">
-          <textarea name="message" id="txtarea" cols="30" rows="5" class="contact__info__register__input area-input" placeholder="<?php _e('Nội dung', SHYNH) ?>"></textarea>
+        <div class="form__input contact__info__register__area-wrapper">
+          <textarea name="message" id="txtarea" cols="30" rows="5" class="contact__info__register__input contactForm__input area-input" placeholder="<?php _e('Nội dung', SHYNH) ?>"></textarea>
         </div>
-        <div class="contact__info__register__area-wrapper">
+        <div class="form__input contact__info__register__area-wrapper">
           <input type="submit" value="<?php _e('ĐĂNG KÝ', SHYNH) ?>" class="contact__info__register__submit">
         </div>
       </form>

@@ -46,7 +46,7 @@
             ?>
             <input type="submit" name="contactForm__submit" id="contactForm__submit" class="button contactForm__submit" value="<?php _e('Đăng ký','shynh') ?>"/>
             <input type="hidden" name="nonce" class="nonce" value="<?php echo wp_create_nonce('add_contact_nonce') ?>" />
-            <input type="hidden" name="contactForm__category" class="contactForm__category" value="20" />
+            <input type="hidden" name="contactForm__category" class="contactForm__category" value="25" />
             <input type="hidden" name="popup__id" class="popup__id" value="common-popup"/>
         </form>
     </div>

@@ -6,6 +6,21 @@ kenEvents.current_width = function () {
 kenEvents.current_height = function () {
     return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 }
+kenEvents.getCookie = function (cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
 kenEvents.menu = function () {
     jQuery('.header__menutab').click(function () {
         jQuery(this).toggleClass('actived');
@@ -74,9 +89,23 @@ kenEvents.curlinkTo = function () {
 }
 
 kenEvents.contactForm = function () {
-    jQuery('.contactForm').submit(function (e) {
+    if (!kenEvents.getCookie('main__popup')) {
+        setTimeout(function () {
+            jQuery('.kpopup').each(function () {
+                jQuery(this).removeClass('animate__fadeIn');
+            })
+            jQuery('#main__popup').addClass('animate__animated animate__fadeIn');
+        }, 5000);
+    }
 
+    jQuery('.contactForm').submit(function (e) {
         var formID = jQuery(this).attr('id');
+        var curKpopup = jQuery(this).closest('.kpopup');
+        var formAction = curKpopup.attr('data-action');
+        if (formAction) {
+            formAction = jQuery('#' + formAction);
+        }
+        var formCookie = curKpopup.attr('data-cookie');
         var formCurrent = jQuery('#' + formID);
         var popup = '';
         if (formCurrent.find('.popup__id').length > 0) {
@@ -88,6 +117,7 @@ kenEvents.contactForm = function () {
         var contactForm__tag = formCurrent.attr('name');
         var contactForm__name = formCurrent.find('.contactForm__name').val();
         var contactForm__phone = formCurrent.find('.contactForm__phone').val();
+        var contactForm__email = formCurrent.find('.contactForm__email').val();
         var contactForm__service = formCurrent.find('.contactForm__service').val();
         var contactForm__title = '';
         var contactForm__category = formCurrent.find(".contactForm__category").val();
@@ -112,7 +142,6 @@ kenEvents.contactForm = function () {
             nonce &&
             formID
         ) {
-            console.log(global_params.ajaxurl);
             formCurrent.find('.contactForm__submit').prop('disabled', true);
             jQuery.ajax({
                 type: "post",
@@ -125,16 +154,26 @@ kenEvents.contactForm = function () {
                     nonce: nonce,
                     service_id: contactForm__service,
                     title: contactForm__title,
-                    term_id: contactForm__category
+                    term_id: contactForm__category,
+                    fcookie: formCookie
                 },
                 success: function (response) {
+                    jQuery('.kpopup').each(function () {
+                        jQuery(this).removeClass('animate__animated animate__fadeIn');
+                    });
                     formCurrent.find('.contactForm__input').val('');
+                    if (formAction) {
+                        coverPopup = formAction;
+                    } else {
+                        coverPopup = popup;
+                    }
                     if (response.status == 1) {
-                        popup.find('.kpopup__content').html(nl2br(response.msg));
-                        popup.addClass('animate__animated animate__fadeIn');
-                    }else{
-                        popup.find('.kpopup__content').html(nl2br(response.msg));
-                        popup.addClass('animate__animated animate__fadeIn');
+                        formCurrent.find('.contactForm__submit').prop('disabled', false);
+                        coverPopup.find('.kpopup__content').html(nl2br(response.msg));
+                        coverPopup.addClass('animate__animated animate__fadeIn');
+                    } else {
+                        coverPopup.find('.kpopup__content').html(nl2br(response.msg));
+                        coverPopup.addClass('animate__animated animate__fadeIn');
                     }
                 }
             });
@@ -153,6 +192,24 @@ kenEvents.popup = function () {
     })
     jQuery('.kpopup__buttonclose').click(function () {
         jQuery(this).closest('.kpopup').removeClass('animate__animated animate__fadeIn');
+    })
+    jQuery('.kpopup').each(function(){
+        var autoloadMode__second = jQuery(this).attr('data-autoload');
+        if(autoloadMode__second){
+            var dataCookie = jQuery(this).attr('data-cookie');
+            if(dataCookie){
+                var dataCookieFlag = kenEvents.getCookie(dataCookie);
+                if(dataCookieFlag){
+                    return;
+                }
+            }
+            var _this = jQuery(this);
+            setTimeout(function(){
+                jQuery('.kpopup').removeClass('animate__animated animate__fadeIn');
+                _this.addClass('animate__animated animate__fadeIn');
+            }, autoloadMode__second);
+            return;
+        }
     })
 }
 kenEvents.gotEffects = function () {
@@ -263,9 +320,9 @@ kenEvents.serviceBlock = function () {
 
 }
 
-function nl2br (str, is_xhtml) {   
-    var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';    
-    return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1'+ breakTag +'$2');
+function nl2br(str, is_xhtml) {
+    var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';
+    return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
 }
 
 function stringToSlug(string) {

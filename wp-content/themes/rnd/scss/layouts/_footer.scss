@@ -82,34 +82,36 @@
         }
     }
 }
-.form{
-    &__input{
-        border: 1px solid $grey;
-        @include flex;
-        input,select{
-            border: none;
-            padding: 0.5rem 1rem;
-            outline: none;
-            flex: 1;
-        }
-        i{
-            font-size: 26px;
-            padding: 1rem 0;
-            color: $yellow;
-        }
-        label{
-            padding: 0 1.6rem;
-            background: #fff;
-            position: relative;
-            &:after{
-                content: '';
-                position: absolute;
-                height: 80%;
-                width: 1px;
-                background: $gray;
-                display: block;
-                left: 0;
-                top: 10%;
+.footer,.kpopup{
+    .form{
+        &__input{
+            border: 1px solid $grey;
+            @include flex;
+            input,select{
+                border: none;
+                padding: 0.5rem 1rem;
+                outline: none;
+                flex: 1;
+            }
+            i{
+                font-size: 26px;
+                padding: 1rem 0;
+                color: $yellow;
+            }
+            label{
+                padding: 0 1.6rem;
+                background: #fff;
+                position: relative;
+                &:after{
+                    content: '';
+                    position: absolute;
+                    height: 80%;
+                    width: 1px;
+                    background: $gray;
+                    display: block;
+                    left: 0;
+                    top: 10%;
+                }
             }
         }
     }
