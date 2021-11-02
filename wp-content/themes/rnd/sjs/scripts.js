@@ -101,12 +101,19 @@ kenEvents.contactForm = function () {
     jQuery('.contactForm').submit(function (e) {
         var formID = jQuery(this).attr('id');
         var curKpopup = jQuery(this).closest('.kpopup');
-        var formAction = curKpopup.attr('data-action');
-        if (formAction) {
-            formAction = jQuery('#' + formAction);
-        }
-        var formCookie = curKpopup.attr('data-cookie');
         var formCurrent = jQuery('#' + formID);
+        var formAction = '';
+        var formCookie = '';
+        if (curKpopup) {
+            formCookie = curKpopup.attr('data-cookie');
+            formAction = curKpopup.attr('data-action');
+            if (!formAction) {
+                formAction = formCurrent.attr('data-action');
+            }
+            if (formAction) {
+                formAction = jQuery('#' + formAction);
+            }
+        }
         var popup = '';
         if (formCurrent.find('.popup__id').length > 0) {
             popup = formCurrent.find('.popup__id').val();
@@ -117,7 +124,7 @@ kenEvents.contactForm = function () {
         var contactForm__tag = formCurrent.attr('name');
         var contactForm__name = formCurrent.find('.contactForm__name').val();
         var contactForm__phone = formCurrent.find('.contactForm__phone').val();
-        var contactForm__email = formCurrent.find('.contactForm__email').val();
+        var contactForm__email = '';
         var contactForm__service = formCurrent.find('.contactForm__service').val();
         var contactForm__title = '';
         var contactForm__category = formCurrent.find(".contactForm__category").val();
@@ -135,6 +142,15 @@ kenEvents.contactForm = function () {
             formCurrent.find(".contactForm__phone").removeClass("required");
         }
 
+        if(formCurrent.find('.contactForm__email').length > 0){
+            contactForm__email = formCurrent.find('.contactForm__email').val();
+            if(emailVail(contactForm__email) == false){
+                formCurrent.find('.contactForm__email').addClass("required");
+            }else{
+                formCurrent.find('.contactForm__email').removeClass("required");
+            }
+        }
+
 
         if (
             contactForm__name &&
@@ -150,14 +166,17 @@ kenEvents.contactForm = function () {
                 data: {
                     action: 'add_contact',
                     name: contactForm__name,
+                    email: contactForm__email,
                     phone: contactForm__phone,
                     nonce: nonce,
                     service_id: contactForm__service,
                     title: contactForm__title,
                     term_id: contactForm__category,
-                    fcookie: formCookie
+                    fcookie: formCookie,
+                    ftag: contactForm__tag
                 },
                 success: function (response) {
+                    console.log(response);
                     jQuery('.kpopup').each(function () {
                         jQuery(this).removeClass('animate__animated animate__fadeIn');
                     });
@@ -193,18 +212,18 @@ kenEvents.popup = function () {
     jQuery('.kpopup__buttonclose').click(function () {
         jQuery(this).closest('.kpopup').removeClass('animate__animated animate__fadeIn');
     })
-    jQuery('.kpopup').each(function(){
+    jQuery('.kpopup').each(function () {
         var autoloadMode__second = jQuery(this).attr('data-autoload');
-        if(autoloadMode__second){
+        if (autoloadMode__second) {
             var dataCookie = jQuery(this).attr('data-cookie');
-            if(dataCookie){
+            if (dataCookie) {
                 var dataCookieFlag = kenEvents.getCookie(dataCookie);
-                if(dataCookieFlag){
+                if (dataCookieFlag) {
                     return;
                 }
             }
             var _this = jQuery(this);
-            setTimeout(function(){
+            setTimeout(function () {
                 jQuery('.kpopup').removeClass('animate__animated animate__fadeIn');
                 _this.addClass('animate__animated animate__fadeIn');
             }, autoloadMode__second);

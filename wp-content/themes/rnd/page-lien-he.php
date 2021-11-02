@@ -39,7 +39,7 @@
           <p class="contact__info__detail-info cellphone-icon">1900989800</p>
         </div>
       </div>
-      <form action="" method="POST" class="contactForm contact__info__register" id="contact__popup" name="contact__popup">
+      <form action="" id="contact__popup" name="contact__popup" data-action="common-popup" class="contactForm contact__info__register" method="POST">
         <div class="contact__info__register__area-wrapper">
           <h2 class="h3">Nhận Thông Tin Khuyến Mãi & <br>Góp Ý Dịch Vụ</h2>
         </div>
@@ -56,8 +56,11 @@
           <textarea name="message" id="txtarea" cols="30" rows="5" class="contact__info__register__input contactForm__input area-input" placeholder="<?php _e('Nội dung', SHYNH) ?>"></textarea>
         </div>
         <div class="form__input contact__info__register__area-wrapper">
-          <input type="submit" value="<?php _e('ĐĂNG KÝ', SHYNH) ?>" class="contact__info__register__submit">
+          <input type="submit" value="<?php _e('ĐĂNG KÝ', SHYNH) ?>" name="contactForm__submit" class="contact__info__register__submit contactForm__submit">
         </div>
+        <input type="hidden" name="nonce" class="nonce" value="<?php echo wp_create_nonce('add_contact_nonce') ?>" />
+        <input type="hidden" name="contactForm__category" class="contactForm__category" value="27" />
+        <input type="hidden" name="popup__id" class="popup__id" value="contact__popup" />
       </form>
     </div>
   </div>

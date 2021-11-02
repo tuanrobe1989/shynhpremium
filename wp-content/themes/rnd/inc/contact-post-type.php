@@ -66,6 +66,7 @@ add_filter('manage_contact_posts_columns', 'add_contact_columns');
 function add_contact_columns($columns)
 {
     $columns['name'] = __('Họ Tên', 'shynh');
+    $columns['email'] = __('Email', 'shynh');
     $columns['phone'] = __('Số Điện Thoại', 'shynh');
     $columns['crm_service_id'] = __('Service Id', 'shynh');
     $columns['contact_title'] = __('Form Title', 'shynh');
@@ -94,6 +95,7 @@ function contact_sortable_columns($columns)
 {
     $columns['name'] = 'name';
     $columns['phone'] = 'phone';
+    $columns['email'] = 'email';
     $columns['crm_service_id'] = 'crm_service_id';
     $columns['contact_title'] = 'contact_title';
     return $columns;
@@ -108,6 +110,10 @@ function contact_orderby($query)
     if ('name' === $query->get('orderby')) :
         $query->set('orderby', 'meta_value');
         $query->set('meta_key', 'name');
+    endif;
+    if ('email' === $query->get('orderby')) :
+        $query->set('orderby', 'meta_value');
+        $query->set('meta_key', 'email');
     endif;
     if ('phone' === $query->get('orderby')) :
         $query->set('orderby', 'meta_value');
@@ -138,12 +144,14 @@ function add_contact()
         $result['type'] = 0;
         $result['msg'] = '';
         $name = wp_strip_all_tags($_REQUEST["name"]);
+        $email = wp_strip_all_tags($_REQUEST["email"]);
         $phone = wp_strip_all_tags($_REQUEST["phone"]);
         $phone = preg_replace('/^[ \t]*[\r\n]+/m', '', $phone);
         $service_crm_id = wp_strip_all_tags($_REQUEST["service_id"]);
         $title = wp_strip_all_tags($_REQUEST["title"]);
         $term_id = wp_strip_all_tags($_REQUEST["term_id"]);
         $fcookie = wp_strip_all_tags($_REQUEST["fcookie"]);
+        $ftag = wp_strip_all_tags($_REQUEST["ftag"]);
         $args = array(
             'post_title' => $name . ' | ' . $phone,
             'post_type' => 'contact'
@@ -160,8 +168,10 @@ function add_contact()
                 );
             endif;
             //Update Post Meta
-            update_field('name', sanitize_text_field($name), $post_id);
-            update_field('phone', sanitize_text_field($phone), $post_id);
+            if($name) update_field('name', sanitize_text_field($name), $post_id);
+            if($phone) update_field('phone', sanitize_text_field($phone), $post_id);
+            if($email) update_field('email', sanitize_text_field($email), $post_id);
+            if($ftag) update_field('fta$ftag', sanitize_text_field($ftag), $post_id);
             if (API_FLAG == TRUE) :
                 $servicecrm = get_crm_services(true, $service_crm_id);
                 if ($servicecrm) :
