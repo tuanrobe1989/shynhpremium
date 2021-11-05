@@ -83,7 +83,13 @@ thead,
 tr,
 th,
 td {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
+  @include breakpoint-up(md) {
+    font-size: 1.6rem;
+  }
+  @include breakpoint-up(lg) {
+    font-size: 1.8rem;
+  }
 }
 
 a {
@@ -127,11 +133,11 @@ h1,
 
 h2,
 .h2 {
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 700;
   font-family: Philosopher;
   color: #444444;
-
+  text-transform: uppercase;
   @include breakpoint-up("xs") {
     font-size: 3rem;
   }
@@ -186,7 +192,7 @@ h2.setTitle {
 
 h3,
 .h3 {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-family: Philosopher;
 
   @include breakpoint-up("xs") {
@@ -198,7 +204,7 @@ h3,
   }
 
   strong {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-family: Philosopher;
 
     @include breakpoint-up("xs") {
@@ -214,27 +220,27 @@ h3,
 
 h4,
 .h4 {
-  font-size: 1.3rem;
+  font-size: 1.8rem;
   font-family: Philosopher;
 
   @include breakpoint-up("xs") {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
 
   @include breakpoint-up("md") {
-    font-size: 2.5rem;
+    font-size: 3rem;
   }
 
   strong {
-    font-size: 1.3rem;
+    font-size: 1.8rem;
     font-family: Philosopher;
 
     @include breakpoint-up("xs") {
-      font-size: 2rem;
+      font-size: 2.2rem;
     }
 
     @include breakpoint-up("md") {
-      font-size: 2.5rem;
+      font-size: 3rem;
     }
   }
 }

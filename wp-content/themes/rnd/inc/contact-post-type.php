@@ -70,6 +70,7 @@ function add_contact_columns($columns)
     $columns['phone'] = __('Số Điện Thoại', 'shynh');
     $columns['crm_service_id'] = __('Service Id', 'shynh');
     $columns['contact_title'] = __('Form Title', 'shynh');
+    $columns['ftag'] = __('Tag', 'shynh');
     return $columns;
 }
 
@@ -88,6 +89,9 @@ function value_contact_columns($column, $post_id)
     if ('contact_title' === $column) {
         echo ucwords(get_post_meta($post_id, 'contact_title', true));
     }
+    if ('ftag' === $column) {
+        echo ucwords(get_post_meta($post_id, 'ftag', true));
+    }
 }
 
 add_filter('manage_edit-contact_sortable_columns', 'contact_sortable_columns');
@@ -98,6 +102,7 @@ function contact_sortable_columns($columns)
     $columns['email'] = 'email';
     $columns['crm_service_id'] = 'crm_service_id';
     $columns['contact_title'] = 'contact_title';
+    $columns['ftag'] = 'ftag';
     return $columns;
 }
 
@@ -126,6 +131,10 @@ function contact_orderby($query)
     if ('contact_title' === $query->get('orderby')) :
         $query->set('orderby', 'meta_value');
         $query->set('meta_key', 'contact_title');
+    endif;
+    if ('ftag' === $query->get('orderby')) :
+        $query->set('orderby', 'meta_value');
+        $query->set('meta_key', 'ftag');
     endif;
 }
 

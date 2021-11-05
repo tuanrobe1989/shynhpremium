@@ -11,13 +11,13 @@
       height: 450px;
       margin-top: 60px;
     }
-    @include breakpoint-up(lg) {
+    @include breakpoint-up(md) {
       height: 600px;
     }
   }
   &__info {
     margin-top: 32px;
-    @include breakpoint-up(lg) {
+    @include breakpoint-up(md) {
       @include flex;
       @include justify-content(space-between);
     }
@@ -27,7 +27,7 @@
     &__detail-block {
       margin-top: 12px;
 
-      @include breakpoint-up(lg) {
+      @include breakpoint-up(md) {
         margin: 44px 0;
       }
     }
@@ -44,7 +44,7 @@
       background-repeat: no-repeat;
       background-position: -3px 5px;
 
-      @include breakpoint-up(lg) {
+      @include breakpoint-up(md) {
         font-size: 1.5rem;
         display: block;
         margin: 4px 0;
@@ -71,20 +71,23 @@
   &__info__register {
     margin-top: 32px;
 
-    @include breakpoint-up(lg) {
+    @include breakpoint-up(md) {
       margin-top: 34px;
-      max-width: 800px;
+      max-width: 580px;
       @include flex;
       @include flex-wrap;
       margin-left: -23px;
       margin-left: -23px;
+    }
+    @include breakpoint-up(lg) {
+      max-width: 800px;
     }
   }
 
   &__info__register__wrapper {
     width: 100%;
     margin: 20px 0;
-    @include breakpoint-up(lg) {
+    @include breakpoint-up(md) {
       height: 48px;
       margin: 0;
       padding: 0 23px;
@@ -95,20 +98,27 @@
   &__info__register__area-wrapper {
     width: 100%;
 
-    @include breakpoint-up(lg) {
+    @include breakpoint-up(md) {
       padding: 0 23px;
     }
   }
 
   &__info__register__input {
     width: 100%;
-    height: 46px;
-    padding-left: 4px;
-    border: none;
     outline: none;
-    border-bottom: 2px solid #696969;
+    border: 2px solid #696969;
     color: $black;
     font-size: 1.5rem;
+    margin: 1rem 0;
+    padding: 1.4rem;
+    &:nth-child(1){
+      margin-top: 3rem;
+    }
+    @include breakpoint-up(md) {
+      border: 0;
+      border-bottom: 2px solid #696969;
+    }
+
     &::placeholder {
       color: $black;
       font-size: 1.5rem;
@@ -135,5 +145,11 @@
     font-weight: 700;
     color: $black;
     cursor: pointer;
+    @include transition_default(0.3s);
+    &:hover{
+      background-color: $yellow;
+      color: #fff;
+      border-color: $black;
+    }
   }
 }
