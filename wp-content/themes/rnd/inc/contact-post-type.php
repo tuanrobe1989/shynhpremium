@@ -177,10 +177,10 @@ function add_contact()
                 );
             endif;
             //Update Post Meta
-            if($name) update_field('name', sanitize_text_field($name), $post_id);
-            if($phone) update_field('phone', sanitize_text_field($phone), $post_id);
-            if($email) update_field('email', sanitize_text_field($email), $post_id);
-            if($ftag) update_field('fta$ftag', sanitize_text_field($ftag), $post_id);
+            if ($name) update_field('name', sanitize_text_field($name), $post_id);
+            if ($phone) update_field('phone', sanitize_text_field($phone), $post_id);
+            if ($email) update_field('email', sanitize_text_field($email), $post_id);
+            if ($ftag) update_field('fta$ftag', sanitize_text_field($ftag), $post_id);
             if (API_FLAG == TRUE) :
                 $servicecrm = get_crm_services(true, $service_crm_id);
                 if ($servicecrm) :
@@ -198,7 +198,7 @@ function add_contact()
             endif;
             $result['msg'] = 'Cám ơn bạn đăng ký, <br>chúng tôi sẽ liên hệ hỗ trợ bạn ngay!';
             $result['status'] = 1;
-            do_action('kpopup_after_susscess',$fcookie);
+            do_action('kpopup_after_susscess', $fcookie);
         else :
             $result['msg'] = __('Có lỗi xảy ra trong quá trình xử lý, bạn hảy thử lại nhé', 'shynh');
             $result['status'] = 2;
@@ -212,13 +212,11 @@ function add_contact()
     die();
     ob_end_flush();
 }
-// echo "<pre>";
-//     print_r($_COOKIE);
-// echo "</pre>";
-// unset($_COOKIE['main__popup']);
-// setcookie('main__popup', '', time() - 3600, '/');
-add_action('kpopup_after_susscess', 'set_cookie_mainpopup',10,);
-function set_cookie_mainpopup($param){
+
+setcookie('main__popup', '', time() - 3600, '/');
+add_action('kpopup_after_susscess', 'set_cookie_mainpopup', 10,);
+function set_cookie_mainpopup($param)
+{
     if (!isset($_COOKIE[$param])) :
         setcookie($param, true, (time() + 259200), '/');
     endif;
@@ -283,9 +281,11 @@ function main_popup_func()
                             <div class="form__input">
                                 <input type="text" name="contactForm__phone" id="contactForm__phone" class="contactForm__phone contactForm__input" placeholder="<?php _e('Vui lòng nhập số điện thoại', SHYNH) ?>" />
                             </div>
-                            <input type="submit" name="contactForm__submit" id="contactForm__submit" class="button contactForm__submit" value="<?php _e('Đăng ký', 'shynh') ?>" />
+                            <input type="submit" name="contactForm__submit" id="contactForm__submit" class="button contactForm__submit" value="" />
                             <input type="hidden" name="nonce" class="nonce" value="<?php echo wp_create_nonce('add_contact_nonce') ?>" />
-                            <input type="hidden" name="contactForm__category" class="contactForm__category" value="29" />
+                            <input type="hidden" name="contactForm__category" class="contactForm__category" value=30" />
+                            <input type="hidden" name="contactForm__service" class="contactForm__service" value="17" />
+                            <input type="hidden" name="contactForm__title" class="contactForm__title" value="Dịch Vụ Soi Da 0 Đồng" />
                             <input type="hidden" name="popup__id" class="popup__id" value="main-popup" />
                         </form>
                     </div>

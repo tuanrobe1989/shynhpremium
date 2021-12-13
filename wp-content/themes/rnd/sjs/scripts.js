@@ -73,6 +73,23 @@ kenEvents.backTop = function () {
         }
     });
 }
+
+kenEvents.setCookie = function (key, value, expiry) {
+    var expires = new Date();
+    expires.setTime(expires.getTime() + (expiry * 24 * 60 * 60 * 1000));
+    document.cookie = key + '=' + value + ';expires=' + expires.toUTCString();
+}
+
+kenEvents.getCookie = function (key) {
+    var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+    return keyValue ? keyValue[2] : null;
+}
+
+kenEvents.eraseCookie = function (key) {
+    var keyValue = getCookie(key);
+    setCookie(key, keyValue, '-1');
+}
+
 kenEvents.curlinkTo = function () {
     var curlink = window.location.href;
     if (curlink.indexOf('#') > -1) {
@@ -126,7 +143,7 @@ kenEvents.contactForm = function () {
         var contactForm__phone = formCurrent.find('.contactForm__phone').val();
         var contactForm__email = '';
         var contactForm__service = formCurrent.find('.contactForm__service').val();
-        var contactForm__title = '';
+        var contactForm__title = formCurrent.find('.contactForm__title').val();
         var contactForm__category = formCurrent.find(".contactForm__category").val();
         var nonce = formCurrent.find('.nonce').val();
 
@@ -142,15 +159,14 @@ kenEvents.contactForm = function () {
             formCurrent.find(".contactForm__phone").removeClass("required");
         }
 
-        if(formCurrent.find('.contactForm__email').length > 0){
+        if (formCurrent.find('.contactForm__email').length > 0) {
             contactForm__email = formCurrent.find('.contactForm__email').val();
-            if(emailVail(contactForm__email) == false){
+            if (emailVail(contactForm__email) == false) {
                 formCurrent.find('.contactForm__email').addClass("required");
-            }else{
+            } else {
                 formCurrent.find('.contactForm__email').removeClass("required");
             }
         }
-
 
         if (
             contactForm__name &&
@@ -211,6 +227,13 @@ kenEvents.popup = function () {
     })
     jQuery('.kpopup__buttonclose').click(function () {
         jQuery(this).closest('.kpopup').removeClass('animate__animated animate__fadeIn');
+        var dataCookie = jQuery(this).closest('.kpopup').attr('data-cookie');
+        if (dataCookie) {
+            var dateStored = new Date();
+            var minutes = 20;
+            dateStored.setTime(dateStored.getTime() + (minutes * 60 * 1000));
+            kenEvents.setCookie(dataCookie, true, dateStored);
+        }
     })
     jQuery('.kpopup').each(function () {
         var autoloadMode__second = jQuery(this).attr('data-autoload');
