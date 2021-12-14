@@ -283,7 +283,7 @@ function main_popup_func()
                             </div>
                             <input type="submit" name="contactForm__submit" id="contactForm__submit" class="button contactForm__submit" value="" />
                             <input type="hidden" name="nonce" class="nonce" value="<?php echo wp_create_nonce('add_contact_nonce') ?>" />
-                            <input type="hidden" name="contactForm__category" class="contactForm__category" value=30" />
+                            <input type="hidden" name="contactForm__category" class="contactForm__category" value=31" />
                             <input type="hidden" name="contactForm__service" class="contactForm__service" value="17" />
                             <input type="hidden" name="contactForm__title" class="contactForm__title" value="Dịch Vụ Soi Da 0 Đồng" />
                             <input type="hidden" name="popup__id" class="popup__id" value="main-popup" />
