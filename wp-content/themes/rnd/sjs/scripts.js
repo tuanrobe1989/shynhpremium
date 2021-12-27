@@ -114,6 +114,12 @@ kenEvents.contactForm = function () {
             jQuery('#main__popup').addClass('animate__animated animate__fadeIn');
         }, 5000);
     }
+    if(jQuery('.contactForm__service').length > 0){
+        jQuery('.contactForm__service').change(function(){
+            var contactForm__service_text = jQuery(this).find(":selected").text();
+            jQuery(this).closest('.contactForm').find('.contactForm__title').val(contactForm__service_text);
+        })
+    }
 
     jQuery('.contactForm').submit(function (e) {
         var formID = jQuery(this).attr('id');
@@ -138,11 +144,12 @@ kenEvents.contactForm = function () {
                 popup = jQuery('#' + popup);
             }
         }
-        var contactForm__tag = formCurrent.attr('name');
+        var contactForm__tag = formCurrent.find('.contactForm__tag').val();
         var contactForm__name = formCurrent.find('.contactForm__name').val();
         var contactForm__phone = formCurrent.find('.contactForm__phone').val();
         var contactForm__email = '';
         var contactForm__service = formCurrent.find('.contactForm__service').val();
+        var contactForm__description = '';
         var contactForm__title = formCurrent.find('.contactForm__title').val();
         var contactForm__category = formCurrent.find(".contactForm__category").val();
         var nonce = formCurrent.find('.nonce').val();
@@ -167,6 +174,18 @@ kenEvents.contactForm = function () {
                 formCurrent.find('.contactForm__email').removeClass("required");
             }
         }
+        
+        if(formCurrent.find('.contactForm__service').length > 0){
+            if(contactForm__service ==  ""){
+                formCurrent.find(".contactForm__service").addClass("required");
+            }else{
+                formCurrent.find(".contactForm__service").removeClass("required");
+            }
+        }
+
+        if(formCurrent.find('.contactForm__description').length > 0){
+            contactForm__description = formCurrent.find('.contactForm__description').val();
+        }
 
         if (
             contactForm__name &&
@@ -184,6 +203,7 @@ kenEvents.contactForm = function () {
                     name: contactForm__name,
                     email: contactForm__email,
                     phone: contactForm__phone,
+                    description: contactForm__description,
                     nonce: nonce,
                     service_id: contactForm__service,
                     title: contactForm__title,

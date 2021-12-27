@@ -19,7 +19,9 @@ if (! defined('WP_PLUGIN_DIR')) {
 $wpacuMuPluginFilterFile = WP_PLUGIN_DIR.'/wp-asset-clean-up-pro/pro/mu-plugins/wpacu-plugins-filter-main.php';
 
 // Activated per site (default)
-$wpacuActivePlugins = apply_filters('active_plugins', get_option('active_plugins', array()));
+// Get a possible filtered value (e.g. by Plugin Organizer or other similar plugin) and not the one from the database
+// as only the current active plugins matter
+$wpacuActivePlugins = get_option('active_plugins', array());
 
 // In case we're dealing with a MultiSite setup
 if (is_multisite()) {

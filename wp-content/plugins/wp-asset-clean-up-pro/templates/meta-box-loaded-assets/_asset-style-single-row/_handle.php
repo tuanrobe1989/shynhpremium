@@ -47,12 +47,11 @@ if ( ! isset($data, $isCoreFile, $hideCoreFiles, $styleLocationChanged, $childHa
 	// [/wpacu_pro]
 	?>
 </div>
-	<!-- Clear on form submit it if the dependency is not there anymore -->
-    <!-- -->
 <?php
+$ignoreChild = (isset($data['ignore_child']['styles'][$data['row']['obj']->handle]) && $data['ignore_child']['styles'][$data['row']['obj']->handle]);
+
 if (! empty($childHandles)) {
-	$ignoreChild = (isset($data['ignore_child']['styles'][$data['row']['obj']->handle]) && $data['ignore_child']['styles'][$data['row']['obj']->handle]);
-	?>
+?>
     <div class="wpacu_dependency_notice_area">
 		<em style="font-size: 85%;">
 			<span style="color: #0073aa; width: 19px; height: 19px; vertical-align: middle;" class="dashicons dashicons-info"></span>
@@ -83,4 +82,9 @@ if (! empty($childHandles)) {
 		</label>
 	</div>
 	<?php
+} elseif ($ignoreChild) {
+	// Keep the option enabled in case ignoring other dependencies was already chosen in a different page (e.g. in some pages a handle can have a dependency, in others it might not have any)
+    ?>
+    <input type="hidden" name="<?php echo WPACU_FORM_ASSETS_POST_KEY; ?>[styles][<?php echo $data['row']['obj']->handle; ?>][ignore_child]" value="1" />
+    <?php
 }

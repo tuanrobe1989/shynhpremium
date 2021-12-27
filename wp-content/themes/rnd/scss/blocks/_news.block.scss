@@ -9,6 +9,7 @@
     @include breakpoint-up("md") {
       @include flex;
       @include flex-wrap;
+      @include justify-content(center);
       margin-left: -16px;
       margin-right: -16px;
     }
@@ -53,6 +54,7 @@
       background: $grey;
       img {
         display: block;
+        width: 100%;
       }
     }
 
@@ -95,6 +97,8 @@
     @include breakpoint-up("md") {
       @include flex;
       @include flex-wrap;
+      @include align-items(center);
+      @include justify-content(center);
       margin-left: -16px;
       margin-right: -16px;
     }

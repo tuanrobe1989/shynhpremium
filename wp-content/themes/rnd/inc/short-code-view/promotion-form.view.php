@@ -20,6 +20,7 @@
             <input type="hidden" name="contactForm__category" class="contactForm__category" value="25" />
             <input type="hidden" name="contactForm__service" class="contactForm__service" value="17" />
             <input type="hidden" name="contactForm__title" class="contactForm__title" value="Dịch Vụ Soi Da 0 Đồng" />
+            <input type="hidden" name="contactForm__tag" class="contactForm__tag" value="footer__form"/>
             <input type="hidden" name="popup__id" class="popup__id" value="common-popup"/>
         </form>
     </div>

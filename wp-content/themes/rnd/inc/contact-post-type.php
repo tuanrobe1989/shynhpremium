@@ -156,6 +156,7 @@ function add_contact()
         $email = wp_strip_all_tags($_REQUEST["email"]);
         $phone = wp_strip_all_tags($_REQUEST["phone"]);
         $phone = preg_replace('/^[ \t]*[\r\n]+/m', '', $phone);
+        $description = wp_strip_all_tags($_REQUEST["description"]);
         $service_crm_id = wp_strip_all_tags($_REQUEST["service_id"]);
         $title = wp_strip_all_tags($_REQUEST["title"]);
         $term_id = wp_strip_all_tags($_REQUEST["term_id"]);
@@ -180,7 +181,8 @@ function add_contact()
             if ($name) update_field('name', sanitize_text_field($name), $post_id);
             if ($phone) update_field('phone', sanitize_text_field($phone), $post_id);
             if ($email) update_field('email', sanitize_text_field($email), $post_id);
-            if ($ftag) update_field('fta$ftag', sanitize_text_field($ftag), $post_id);
+            if ($description) update_field('description', sanitize_text_field($description), $post_id);
+            if ($ftag) update_field('ftag', sanitize_text_field($ftag), $post_id);
             if (API_FLAG == TRUE) :
                 $servicecrm = get_crm_services(true, $service_crm_id);
                 if ($servicecrm) :
@@ -189,7 +191,8 @@ function add_contact()
                         "mobile" => sanitize_text_field($phone),
                         "service_label" => $servicecrm['service_label'],
                         "service_register_date" => date("Y-m-d"),
-                        "source" => "WEBSITE SHYNH PREMIUM"
+                        "source" => "WEBSITE SHYNH PREMIUM",
+                        "description" => $description
                     );
                     $result['crm_service_registration'] = save_service_registration($data);
                     update_field('crm_service_id', sanitize_text_field($service_crm_id), $post_id);

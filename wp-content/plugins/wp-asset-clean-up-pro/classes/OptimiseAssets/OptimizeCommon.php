@@ -53,7 +53,7 @@ class OptimizeCommon
 		add_action('after_switch_theme', array($this, 'clearCache' ));
 
 		// Is WP Rocket's page cache cleared? Clear Asset CleanUp's CSS cache files too
-		if (array_key_exists('action', $_GET) && $_GET['action'] === 'purge_cache') {
+		if ( isset($_GET['action']) && $_GET['action'] === 'purge_cache' ) {
 			// Leave its default parameters, no redirect needed
 			add_action('init', static function() {
 				OptimizeCommon::clearCache();
@@ -211,7 +211,7 @@ class OptimizeCommon
 
 		// This is useful to avoid changing the DOM via wp_loaded action hook
 		// In order to check how fast the page loads without the DOM changes (for debugging purposes)
-		$wpacuNoHtmlChanges = array_key_exists( 'wpacu_no_html_changes', $_GET ) || ( defined('WPACU_NO_HTML_CHANGES') && WPACU_NO_HTML_CHANGES );
+		$wpacuNoHtmlChanges = isset($_REQUEST['wpacu_no_html_changes']) || ( defined('WPACU_NO_HTML_CHANGES') && WPACU_NO_HTML_CHANGES );
 
 		if ( $wpacuNoHtmlChanges || Plugin::preventAnyFrontendOptimization() ) {
 			/* [wpacu_timing] */ Misc::scriptExecTimer( 'alter_html_source', 'end' ); /* [/wpacu_timing] */
@@ -294,7 +294,7 @@ class OptimizeCommon
 		/* [wpacu_timing] */ Misc::scriptExecTimer( 'alter_html_source', 'end' ); /* [/wpacu_timing] */
 
 		// [wpacu_debug]
-		if (array_key_exists('wpacu_debug', $_GET)) {
+		if (isset($_GET['wpacu_debug'])) {
 			$htmlSource = self::applyDebugTiming($htmlSource);
 		}
 		// [wpacu_debug]
@@ -1061,7 +1061,7 @@ class OptimizeCommon
 			Main::instance()->settings = $wpacuSettingsClass->getAll();
 		}
 
-		$isUriRequest = array_key_exists('wpacu_clear_cache_print', $_GET);
+		$isUriRequest = isset($_GET['wpacu_clear_cache_print']);
 		$isAjaxCallOrUriRequest = (isset($_POST['action']) && $_POST['action'] === WPACU_PLUGIN_ID . '_clear_cache' && is_admin()) || $isUriRequest;
 		$clearedOutput = $keptOutput = array();
 
@@ -1413,7 +1413,7 @@ SQL;
 	public static function doNotClearCache()
 	{
 		// WooCommerce GET or AJAX call
-		if (array_key_exists('wc-ajax', $_GET) && $_GET['wc-ajax']) {
+		if (isset($_GET['wc-ajax']) && $_GET['wc-ajax']) {
 			return true;
 		}
 
@@ -1465,6 +1465,17 @@ SQL;
 	public static function filterWpContentUrl($anyCdnUrl = '')
 	{
 		$wpContentUrl = WP_CONTENT_URL;
+
+		$parseContentUrl = parse_url($wpContentUrl);
+		$parseBaseUrl = parse_url(site_url());
+
+		// Perhaps WPML plugin is used and the content URL is different then the current domain which might be for a different language
+		if ( ($parseContentUrl['host'] !== $parseBaseUrl['host']) &&
+		     (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== $parseContentUrl['host']) &&
+		     isset($parseContentUrl['path']) &&
+			 is_dir(rtrim(ABSPATH, '/') . $parseContentUrl['path']) ) {
+			$wpContentUrl = str_replace($parseContentUrl['host'], $parseBaseUrl['host'], $wpContentUrl);
+		}
 
 		// Is the page loaded via SSL, but the site url from the database starts with 'http://'
 		// Then use '//' in front of CSS/JS generated via Asset CleanUp

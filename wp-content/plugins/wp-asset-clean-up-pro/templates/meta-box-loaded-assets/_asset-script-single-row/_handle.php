@@ -48,11 +48,10 @@ if ( ! isset($data, $isCoreFile, $hideCoreFiles, $jqueryIconHtmlHandle, $scriptL
 	// [/wpacu_pro]
 	?>
 </div>
-    <!-- Clear on form submit it if the dependency is not there anymore -->
-    <!-- -->
 <?php
+$ignoreChild = (isset($data['ignore_child']['scripts'][$data['row']['obj']->handle]) && $data['ignore_child']['scripts'][$data['row']['obj']->handle]);
+
 if (! empty($childHandles)) {
-	$ignoreChild = (isset($data['ignore_child']['scripts'][$data['row']['obj']->handle]) && $data['ignore_child']['scripts'][$data['row']['obj']->handle]);
 	?>
 	<div class="wpacu_dependency_notice_area">
         <?php
@@ -104,4 +103,9 @@ if (! empty($childHandles)) {
         ?>
 	</div>
 <?php
+} elseif ($ignoreChild) {
+	// Keep the option enabled in case ignoring other dependencies was already chosen in a different page (e.g. in some pages a handle can have a dependency, in others it might not have any)
+	?>
+    <input type="hidden" name="<?php echo WPACU_FORM_ASSETS_POST_KEY; ?>[scripts][<?php echo $data['row']['obj']->handle; ?>][ignore_child]" value="1" />
+	<?php
 }

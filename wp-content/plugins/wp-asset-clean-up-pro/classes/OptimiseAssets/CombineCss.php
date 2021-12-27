@@ -583,7 +583,7 @@ HTML;
 	public static function proceedWithCssCombine()
 	{
 		// Not on query string request (debugging purposes)
-		if (array_key_exists('wpacu_no_css_combine', $_GET)) {
+		if ( ! empty($_REQUEST) && array_key_exists('wpacu_no_css_combine', $_REQUEST) ) {
 			return false;
 		}
 

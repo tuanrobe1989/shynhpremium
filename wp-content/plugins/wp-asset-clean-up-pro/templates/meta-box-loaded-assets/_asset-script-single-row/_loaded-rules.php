@@ -8,7 +8,7 @@ if (! isset($data)) {
 }
 ?>
 <!-- [wpacu_pro] -->
-<?php if (isset($data['row']['obj']->src) && $data['row']['obj']->src !== '') {
+<?php if (isset($data['row']['obj']->src) && trim($data['row']['obj']->src) !== '') {
 	$isAsyncGlobal = (in_array($data['row']['obj']->handle, $data['scripts_attributes']['everywhere']['async']));
 	$isDeferGlobal = (in_array($data['row']['obj']->handle, $data['scripts_attributes']['everywhere']['defer']));
 	?>

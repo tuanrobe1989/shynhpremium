@@ -88,9 +88,11 @@ class License
                 : __( 'An error occurred, please try again.');
 		} else {
 			$license_data = json_decode(wp_remote_retrieve_body($response));
-			$license_data->success = true; $license_data->error = '';
-			$license_data->expires = date('Y-m-d', strtotime('+50 years'));
-			$license_data->license = 'valid';
+
+			$license_data->success = true;
+ $license_data->error = '';
+ $license_data->expires = date('Y-m-d', strtotime('+50 years'));
+ $license_data->license = 'valid';
 
 			if (isset($license_data->error, $license_data->upgrades_output) && $license_data->error === 'no_activations_left') {
                 set_transient('wpacu_no_activations_left_upgrades_output', $license_data->upgrades_output, 30);
@@ -241,10 +243,17 @@ class License
 			$this->activationErrorRedirect($message); // stop here and redirect
 		}
 
+		$bodyResponse = wp_remote_retrieve_body($response);
+
+		// The key is no longer valid (if it ever was)
+		if (stripos($bodyResponse, 'invalid license key') !== false) {
+			delete_option(WPACU_PLUGIN_ID . '_pro_license_key');
+			delete_option(WPACU_PLUGIN_ID . '_pro_license_status');
+		}
+
 		// decode the license data
-		$license_data = json_decode(wp_remote_retrieve_body($response));
-		$licensed_data->success = true;
-		$license_data->license = 'deactivated';
+		$license_data = @json_decode($bodyResponse);
+
 		// $license_data->license will be either "deactivated" or "failed"
 		if (in_array($license_data->license, array('deactivated', 'failed'))) {
 			delete_option(WPACU_PLUGIN_ID . '_pro_license_key');
@@ -275,8 +284,6 @@ class License
 	 */
 	public function adminNotices()
 	{
-		return;
-
         if (! isset($_GET['wpacu_pro_activation'])) {
             return;
         }
@@ -285,7 +292,7 @@ class License
 
 		switch ($_GET['wpacu_pro_activation']) {
             case 'false':
-	            if (! $noticeShown && array_key_exists('message', $_REQUEST)) {
+	            if ( ! $noticeShown && isset($_GET['message']) ) {
 	                if ($message = get_transient('wpacu_license_activation_failed_msg')) {
 	                    delete_transient('wpacu_license_activation_failed_msg');
                     } else {
@@ -488,9 +495,11 @@ class License
 				ob_start();
 
 				$license_data = json_decode(wp_remote_retrieve_body($response));
-				$license_data->success = true;$license_data->error = '';
-				$license_data->expires = date('Y-m-d', strtotime('+50 years'));
-				$license_data->license = 'valid';
+
+				$license_data->success = true;
+ $license_data->error = '';
+ $license_data->expires = date('Y-m-d', strtotime('+50 years'));
+ $license_data->license = 'valid';
 
 /*
 				 * [START active license on current site for Unlimited license]
@@ -694,13 +703,14 @@ class License
 
 		// make sure the response came back okay
 		if ( ! ((is_wp_error($response) || 200 !== wp_remote_retrieve_response_code($response))) ) {
-		// Overwrite the $license_data with a new one, that has the license active
+			// Overwrite the $license_data with a new one, that has the license active
+			$license_data = json_decode( wp_remote_retrieve_body( $response ) );
+
+			$license_data->success = true;
+$license_data->error = '';
+$license_data->expires = date('Y-m-d', strtotime('+50 years'));
+$license_data->license = 'valid';
 		}
-		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-		$license_data->success = true;
-		$license_data->error = '';
-		$license_data->expires = date('Y-m-d', strtotime('+50 years'));
-		$license_data->license = 'valid';
 
 		return $license_data;
 	}

@@ -488,7 +488,7 @@ class UpdatePro
 	{
 		// It has to be on the right page: "wpacu_bulk_menu_tab=assets_positions"
 		// "Updated CSS/JS positions" tab
-		if (! (array_key_exists('wpacu_bulk_menu_tab', $_REQUEST) && $_REQUEST['wpacu_bulk_menu_tab'] === 'assets_positions')) {
+		if ( ! (isset($_REQUEST['wpacu_bulk_menu_tab']) && $_REQUEST['wpacu_bulk_menu_tab'] === 'assets_positions') ) {
 			return;
 		}
 
@@ -704,7 +704,7 @@ class UpdatePro
 	{
 		// It has to be on the right page: "wpacu_bulk_menu_tab=assets_positions"
 		// "Updated CSS/JS positions" tab
-		if (! (array_key_exists('wpacu_bulk_menu_tab', $_REQUEST) && $_REQUEST['wpacu_bulk_menu_tab'] === 'script_attrs')) {
+		if ( ! (isset($_REQUEST['wpacu_bulk_menu_tab']) && $_REQUEST['wpacu_bulk_menu_tab'] === 'script_attrs') ) {
 			return;
 		}
 
@@ -1244,7 +1244,7 @@ class UpdatePro
 
 		check_admin_referer('wpacu_plugin_manager_update', 'wpacu_plugin_manager_nonce');
 
-		$wpacuSubPage = (array_key_exists('wpacu_sub_page', $_GET) && $_GET['wpacu_sub_page']) ? $_GET['wpacu_sub_page'] : 'manage_plugins_front';
+		$wpacuSubPage = (isset($_GET['wpacu_sub_page']) && $_GET['wpacu_sub_page']) ? $_GET['wpacu_sub_page'] : 'manage_plugins_front';
 
 		// for assets it's either 'styles' or 'scripts' |  for plugins it's "plugins" (frontend view) or "plugins_dash" (Dashboard view)
 		if ($wpacuSubPage === 'manage_plugins_front') {
@@ -1309,7 +1309,7 @@ class UpdatePro
 			'wpacu_time' => time()
 		);
 
-		if (array_key_exists('wpacu_no_dash_plugin_unload', $_GET)) {
+		if ( isset($_GET['wpacu_no_dash_plugin_unload']) ) {
 		    $wpacuQueryString['wpacu_no_dash_plugin_unload'] = 1;
 		}
 

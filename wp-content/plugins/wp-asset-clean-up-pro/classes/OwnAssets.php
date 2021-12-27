@@ -55,7 +55,7 @@ class OwnAssets
 		    $wpacu_object_data['ajax_url']  = admin_url('admin-ajax.php');
 		    $wpacu_object_data['is_frontend_view'] = false;
 
-		    if (array_key_exists('wpacu_manage_dash', $_GET)) {
+		    if ( isset($_GET['wpacu_manage_dash']) ) {
 			    $wpacu_object_data['force_manage_dash'] = true;
             }
 
@@ -69,14 +69,16 @@ class OwnAssets
 			    $wpacu_object_data['page_url'] = str_replace('http://', 'https://', $wpacu_object_data['page_url']);
 		    }
 
-		    // After the CSS/JS manager's form is submitted (e.g. on an edit post/page)
-            $wpacu_object_data['wpacu_ajax_preload_url_nonce'] = wp_create_nonce('wpacu_ajax_preload_url_nonce');
-
-		    // Check file size AJAX
+		    // Security nonces for AJAX calls
+		    $wpacu_object_data['wpacu_update_specific_settings_nonce'] = wp_create_nonce('wpacu_update_specific_settings_nonce');
+		    $wpacu_object_data['wpacu_update_asset_row_state_nonce'] = wp_create_nonce('wpacu_update_asset_row_state_nonce');
+            $wpacu_object_data['wpacu_print_loaded_hardcoded_assets_nonce'] = wp_create_nonce('wpacu_print_loaded_hardcoded_assets_nonce');
 		    $wpacu_object_data['wpacu_ajax_check_remote_file_size_nonce'] = wp_create_nonce('wpacu_ajax_check_remote_file_size_nonce');
-
-		    // Check external source status (e.g. 200 OK or not)
             $wpacu_object_data['wpacu_ajax_check_external_urls_nonce'] = wp_create_nonce('wpacu_ajax_check_external_urls_nonce');
+		    $wpacu_object_data['wpacu_ajax_get_loaded_assets_nonce'] = wp_create_nonce('wpacu_ajax_get_loaded_assets_nonce');
+		    $wpacu_object_data['wpacu_ajax_load_page_restricted_area_nonce'] = wp_create_nonce('wpacu_ajax_load_page_restricted_area_nonce');
+		    $wpacu_object_data['wpacu_ajax_clear_cache_nonce'] = wp_create_nonce('wpacu_ajax_clear_cache_nonce');
+		    $wpacu_object_data['wpacu_ajax_preload_url_nonce'] = wp_create_nonce('wpacu_ajax_preload_url_nonce'); // After the CSS/JS manager's form is submitted (e.g. on an edit post/page)
 
 		    // [wpacu_pro]
 		    $wpacu_object_data['script_is_parent_alert'] = 'This JavaScript is having the following "children" that depend on it (at least that\'s how it was marked): {wpacu_script_child_handles}.'."\n\n".
@@ -357,7 +359,7 @@ class OwnAssets
 	    // Could be post, page, custom post type (e.g. product, download)
 	    $getPostId = (isset($_GET['post'], $_GET['action']) && $_GET['action'] === 'edit' && $pagenow === 'post.php') ? (int)Misc::getVar('get', 'post') : '';
 
-	    if ($getPostId && Main::instance()->settings['hide_assets_meta_box']) {
+	    if ($getPostId && ! Main::instance()->settings['show_assets_meta_box']) {
 		    // No point in loading the plugin JS if the management meta box is not shown
 		    return;
 	    }
@@ -420,11 +422,11 @@ class OwnAssets
 		}
 
 	    // Do not load any CSS & JS belonging to Asset CleanUp if in "Elementor" preview
-	    if (Main::instance()->isFrontendEditView && array_key_exists('elementor-preview', $_GET) && $_GET['elementor-preview']) {
+	    if (Main::instance()->isFrontendEditView && isset($_GET['elementor-preview']) && $_GET['elementor-preview']) {
 	        return;
 	    }
 
-	    if (array_key_exists('wpacu_clean_load', $_GET)) {
+	    if ( isset($_GET['wpacu_clean_load']) ) {
 	        return;
         }
 
@@ -467,7 +469,7 @@ class OwnAssets
 			        $postId = $pageOnFront;
 		        }
 	        } elseif ( in_array( $pageRequestFor, array( 'posts', 'pages', 'custom-post-types', 'media-attachment' ) ) && isset( $_GET['wpacu_post_id'] ) && $_GET['wpacu_post_id'] ) {
-		        $postId = Misc::getVar( 'get', 'wpacu_post_id' ) ?: 0;
+		        $postId = (int)Misc::getVar( 'get', 'wpacu_post_id' ) ?: 0;
 	        }
         } else {
 		    $postId = isset($post->ID) ? $post->ID : 0;
@@ -731,7 +733,7 @@ JS;
 			// [wpacu_pro]
             $wpacuSiteUrl = site_url();
 
-			$wpacuSubPage = (array_key_exists('wpacu_sub_page', $_GET) && $_GET['wpacu_sub_page']) ? $_GET['wpacu_sub_page'] : 'manage_plugins_front';
+			$wpacuSubPage = (isset($_GET['wpacu_sub_page']) && $_GET['wpacu_sub_page']) ? $_GET['wpacu_sub_page'] : 'manage_plugins_front';
 
 			$sweetAlertTwoScriptInline = <<<JS
 jQuery(document).ready(function($) {

@@ -123,8 +123,8 @@ class OptimizeJs
 		$doFileMinify = true;
 
 		$isMinifyJsFilesEnabled = (isset($fileAlreadyChecked['is_minify_js_enabled']) && $fileAlreadyChecked['is_minify_js_enabled'])
-					? $fileAlreadyChecked['is_minify_js_enabled']
-					: MinifyJs::isMinifyJsEnabled() && in_array(Main::instance()->settings['minify_loaded_js_for'], array('src', 'all', ''));
+			? $fileAlreadyChecked['is_minify_js_enabled']
+			: MinifyJs::isMinifyJsEnabled() && in_array(Main::instance()->settings['minify_loaded_js_for'], array('src', 'all', ''));
 
 		if (! $isMinifyJsFilesEnabled) {
 			$doFileMinify = false;
@@ -220,7 +220,7 @@ class OptimizeJs
 		 * [START] JS Content Optimization
 		*/
 		if (Main::instance()->settings['cache_dynamic_loaded_js'] &&
-			((strpos($src, '/?') !== false) || strpos($src, '.php?') !== false || Misc::endsWith($src, '.php')) &&
+		    ((strpos($src, '/?') !== false) || strpos($src, '.php?') !== false || Misc::endsWith($src, '.php')) &&
 		    (strpos($src, site_url()) !== false)
 		) {
 			$pathToAssetDir = '';
@@ -638,7 +638,7 @@ class OptimizeJs
 	public static function alterHtmlSource($htmlSource)
 	{
 		// There has to be at least one "<script", otherwise, it could be a feed request or something similar (not page, post, homepage etc.)
-		if (stripos($htmlSource, '<script') === false || array_key_exists('wpacu_no_optimize_js', $_GET)) {
+		if ( stripos($htmlSource, '<script') === false || isset($_GET['wpacu_no_optimize_js']) ) {
 			return $htmlSource;
 		}
 
@@ -683,7 +683,7 @@ class OptimizeJs
 				$htmlSource = Preloads::appendPreloadsForScriptsToHead($htmlSource);
 			}
 
-			$htmlSource = str_replace(Preloads::DEL_SCRIPTS_PRELOADS, '', $htmlSource);
+			// Clear the signature later on in case it's needed for any combine JS in the BODY without the "defer" attribute
 			/* [wpacu_timing] */ Misc::scriptExecTimer($wpacuTimingName, 'end'); /* [/wpacu_timing] */
 		}
 
@@ -723,7 +723,7 @@ class OptimizeJs
 
 			// 'no_js_optimize' refers to avoid the combination of JS files
 			if ( (isset( $pageOptions['no_js_optimize'] )     && $pageOptions['no_js_optimize'])
-			  || (isset( $pageOptions['no_assets_settings'] ) && $pageOptions['no_assets_settings']) ) {
+			     || (isset( $pageOptions['no_assets_settings'] ) && $pageOptions['no_assets_settings']) ) {
 				$proceedWithCombineOnThisPage = false;
 			}
 		}
@@ -731,6 +731,9 @@ class OptimizeJs
 		if ($proceedWithCombineOnThisPage) {
 			/* [wpacu_timing] */ // Note: Load timing is checked within the method /* [/wpacu_timing] */
 			$htmlSource = CombineJs::doCombine($htmlSource);
+			if (defined('WPACU_REAPPLY_PRELOADING_FOR_COMBINED_JS') && WPACU_REAPPLY_PRELOADING_FOR_COMBINED_JS) {
+				$htmlSource = Preloads::appendPreloadsForScriptsToHead($htmlSource);
+			}
 		}
 		/* [wpacu_timing] */ Misc::scriptExecTimer($wpacuTimingName, 'end'); /* [/wpacu_timing] */
 
@@ -741,6 +744,8 @@ class OptimizeJs
 		}
 
 		// Final cleanups
+		$htmlSource = str_replace(Preloads::DEL_SCRIPTS_PRELOADS, '', $htmlSource);
+
 		$htmlSource = preg_replace('#(\s+|)(data-wpacu-jquery-core-handle=1|data-wpacu-jquery-migrate-handle=1)(\s+|)#Umi', ' ', $htmlSource);
 
 		$htmlSource = preg_replace('#(\s+|)data-wpacu-script-rel-src-before=(["\'])' . '(.*)' . '(\1)(\s+|)#Usmi', ' ', $htmlSource);

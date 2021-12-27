@@ -20,7 +20,6 @@ return array(
     'WPSEO_News_Schema' => $baseDir . '/classes/schema.php',
     'WPSEO_News_Settings_Genre_Removal_Alert' => $baseDir . '/classes/integrations/settings-genre-removal-alert.php',
     'WPSEO_News_Sitemap' => $baseDir . '/classes/sitemap.php',
-    'WPSEO_News_Sitemap_Images' => $baseDir . '/classes/sitemap-images.php',
     'WPSEO_News_Sitemap_Item' => $baseDir . '/classes/sitemap-item.php',
     'WPSEO_News_Upgrade_Manager' => $baseDir . '/classes/upgrade-manager.php',
     'Yoast_I18n_WordPressOrg_v3' => $vendorDir . '/yoast/i18n-module/src/i18n-wordpressorg-v3.php',

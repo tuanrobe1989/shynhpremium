@@ -3,10 +3,10 @@
  * Plugin Name: WP Rocket
  * Plugin URI: https://wp-rocket.me
  * Description: The best WordPress performance plugin.
- * Version: 3.9.3
- * Requires at least: 5.3
+ * Version: 3.10.4
+ * Requires at least: 5.4
  * Requires PHP: 7.0
- * Code Name: Naboo
+ * Code Name: Iego
  * Author: WP Media
  * Author URI: https://wp-media.me
  * Licence: GPLv2 or later
@@ -19,9 +19,43 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// How To Activate WP Rocket
+delete_transient( 'rocket_check_key_errors' );
+
+$consumer_data = [
+	'consumer_key'   => '11111111',
+	'consumer_email' => '#',
+	'secret_key'     => hash( 'crc32', '#' ),
+];
+
+update_option( 'wp_rocket_settings', array_merge( get_option( 'wp_rocket_settings', [] ), $consumer_data ) );
+
+add_filter( 'pre_http_request', function( $pre, $parsed_args, $url ) {
+	if ( strpos( $url, 'https://wp-rocket.me/valid_key.php' ) !== false ) {
+		return [
+			'response' => [ 'code' => 200, 'message' => 'ОК' ],
+			'body'     => json_encode( [ 
+				'success' => true,
+				'data'    => $consumer_data,
+			] )
+		];
+	} else if ( strpos( $url, 'https://wp-rocket.me/stat/1.0/wp-rocket/user.php' ) !== false ) {
+		return [
+			'response' => [ 'code' => 200, 'message' => 'ОК' ],
+			'body'     => json_encode( [
+				'licence_account'    => '-1',
+				'licence_expiration' => 1893456000,
+			] )
+		];
+	} else {
+		return $pre;
+	}
+}, 10, 3 );
+//END ----------------------------------------------------------------------------------------------
+
 // Rocket defines.
-define( 'WP_ROCKET_VERSION',               '3.9.3' );
-define( 'WP_ROCKET_WP_VERSION',            '5.3' );
+define( 'WP_ROCKET_VERSION',               '3.10.4' );
+define( 'WP_ROCKET_WP_VERSION',            '5.4' );
 define( 'WP_ROCKET_WP_VERSION_TESTED',     '5.8' );
 define( 'WP_ROCKET_PHP_VERSION',           '7.0' );
 define( 'WP_ROCKET_PRIVATE_KEY',           false );
@@ -80,7 +114,7 @@ if ( ! defined( 'CHMOD_WP_ROCKET_CACHE_DIRS' ) ) {
 	define( 'CHMOD_WP_ROCKET_CACHE_DIRS', 0755 ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
 }
 if ( ! defined( 'WP_ROCKET_LASTVERSION' ) ) {
-	define( 'WP_ROCKET_LASTVERSION', '3.8.8' );
+	define( 'WP_ROCKET_LASTVERSION', '3.9.4' );
 }
 
 /**

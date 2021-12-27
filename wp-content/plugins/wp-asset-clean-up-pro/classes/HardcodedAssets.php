@@ -457,7 +457,7 @@ class HardcodedAssets
 			foreach ($hardcodedMarkedForUnloadList as $hardCodedType => $hardcodedHandles) {
 				foreach ($hardcodedHandles as $hardcodedHandle) {
 					// This has to be turned off; sometimes it's used for loading the scripts marked for unload for debugging purposes
-					$preventHardCodedCssUnloading = array_key_exists( 'wpacu_no_hd_css_unload', $_GET );
+					$preventHardCodedCssUnloading = isset($_GET['wpacu_no_hd_css_unload']);
 
 					// STYLEs and LINKs ("stylesheet")
 					if ( (! $preventHardCodedCssUnloading) && in_array($hardCodedType, array('wpacu_hardcoded_links', 'wpacu_hardcoded_styles'))
@@ -476,7 +476,7 @@ class HardcodedAssets
 					}
 
 					// This has to be turned off; sometimes it's used for loading the scripts marked for unload for debugging purposes
-					$preventHardCodedJsUnloading = array_key_exists( 'wpacu_no_hd_js_unload', $_GET );
+					$preventHardCodedJsUnloading = isset($_GET['wpacu_no_hd_js_unload']);
 
 					// SCRIPTs ("src" and inline)
 					if ( (! $preventHardCodedJsUnloading) && in_array($hardCodedType, array('wpacu_hardcoded_scripts_src', 'wpacu_hardcoded_scripts_inline'))

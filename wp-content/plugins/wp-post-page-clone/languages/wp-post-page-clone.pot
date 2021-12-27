@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Post Page Clone\n"
-"POT-Creation-Date: 2017-02-09\n"
-"PO-Revision-Date: 2017-02-09\n"
+"POT-Creation-Date: 2021-12-08\n"
+"PO-Revision-Date: 2021-12-08\n"
 "Last-Translator: \n"
 "Language-Team: Gaurang Sondagar <gaurangsondagar@gmail.com>\n"
 "Language: en_EN\n"
@@ -17,14 +17,26 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Poedit-SearchPath-0: wp-content/plugins/wp-post-page-clone\n"
 
-#: wp-post-page-clone/wp-post-page-clone.php:103
+#: wp-post-page-clone/wp-post-page-clone.php:66
+msgid "You don't have permission to be here"
+msgstr ""
+
+#: wp-post-page-clone/wp-post-page-clone.php:70
+msgid "No post or page to clone has been supplied!, Please try again!"
+msgstr ""
+
+#: wp-post-page-clone/wp-post-page-clone.php:124
 msgid "Post or Page creation failed, could not find original post:"
 msgstr ""
 
-#: wp-post-page-clone/wp-post-page-clone.php:123
+#: wp-post-page-clone/wp-post-page-clone.php:129
+msgid "Security issue occure, Please try again!."
+msgstr ""
+
+#: wp-post-page-clone/wp-post-page-clone.php:153
 msgid "Clone Post and Page"
 msgstr ""
 
-#: wp-post-page-clone/wp-post-page-clone.php:123
+#: wp-post-page-clone/wp-post-page-clone.php:153
 msgid "Click To Clone"
 msgstr ""

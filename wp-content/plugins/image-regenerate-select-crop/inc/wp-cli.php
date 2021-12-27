@@ -59,6 +59,10 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 				$rez['post_type'] = trim( $args[1] );
 			}
 
+			if ( empty( $args['the_command'] ) ) {
+				$args['the_command'] = 'regenerate';
+			}
+
 			if ( ! empty( $args['the_command'] )
 				&& ( 'rawcleanup' === $args['the_command'] || 'resetcleanup' === $args['the_command'] ) ) {
 				// This is always all.
@@ -147,7 +151,6 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 						foreach ( $execute_sizes as $sn => $sv ) {
 							$progress = \WP_CLI\Utils\make_progress_bar( '------- REGENERATE ' . $sn, count( $rows ) );
 							foreach ( $rows as $v ) {
-
 								\SIRSC::load_settings_for_post_id( $v['ID'] );
 								if ( ! empty( \SIRSC::$settings['restrict_sizes_to_these_only'] )
 									&& ! in_array( $sn, \SIRSC::$settings['restrict_sizes_to_these_only'], true ) ) {
@@ -155,6 +158,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 									continue;
 								}
 
+								\SIRSC\Debug\bulk_log_write( 'WP-CLI regenerate ' . $v['ID'] . ' ' . $sn );
 								$filename = get_attached_file( $v['ID'] );
 								if ( ! empty( $filename ) && file_exists( $filename ) ) {
 									\SIRSC\Helper\make_images_if_not_exists( $v['ID'], $sn );
@@ -218,6 +222,8 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 						foreach ( $execute_sizes as $sn => $sv ) {
 							$progress = \WP_CLI\Utils\make_progress_bar( '------- REMOVE ' . $sn, count( $rows ) );
 							foreach ( $rows as $v ) {
+								\SIRSC\Debug\bulk_log_write( 'WP-CLI cleanup ' . $v['ID'] . ' ' . $sn );
+
 								\SIRSC\Action\cleanup_attachment_one_size( $v['ID'], $sn, true, $verbose );
 								$progress->tick();
 							}
@@ -263,6 +269,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 						count( $rows )
 					);
 					foreach ( $rows as $v ) {
+						\SIRSC\Debug\bulk_log_write( 'WP-CLI rawcleanup ' . $v['ID'] );
 						\SIRSC\Action\cleanup_attachment_all_sizes( $v['ID'], true, $verbose );
 						$progress->tick();
 					}
@@ -313,6 +320,8 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 					$upls  = wp_upload_dir();
 					$pref  = trailingslashit( $upls['basedir'] );
 					foreach ( $rows as $v ) {
+						\SIRSC\Debug\bulk_log_write( 'WP-CLI resetcleanup ' . $v['ID'] );
+
 						$compute = \SIRSC\Helper\compute_image_details( $v['ID'], 'full', $upls, $sizes, true );
 						$meta    = ( ! empty( $compute['metadata'] ) )
 							? $compute['metadata'] : wp_get_attachment_metadata( $v['ID'] );

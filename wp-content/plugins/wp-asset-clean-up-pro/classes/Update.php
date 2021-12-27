@@ -2,7 +2,9 @@
 namespace WpAssetCleanUp;
 
 use WpAssetCleanUp\OptimiseAssets\OptimizeCommon;
+// [wpacu_pro]
 use WpAssetCleanUpPro\UpdatePro;
+// [/wpacu_pro]
 
 /**
  * Class Update
@@ -35,21 +37,42 @@ class Update
 	/**
 	 * @var array
 	 */
-	public $updateDoneMsg = array();
+	public $afterSubmitMsg = array();
 
 	/**
 	 * Update constructor.
 	 */
 	public function __construct()
 	{
-	    $homePageSettingsUpdatedText = __('The homepage\'s settings were updated. Please make sure the homepage\'s cache is cleared (if you\'re using a caching plugin or a server-side caching solution) to immediately have the changes applied for every visitor.', 'wp-asset-clean-up');
-		$this->updateDoneMsg['homepage'] = <<<HTML
+	    $homePageSettingsUpdatedText      = __('The homepage\'s settings were updated. Please make sure the homepage\'s cache is cleared (if you\'re using a caching plugin or a server-side caching solution) to immediately have the changes applied for every visitor.', 'wp-asset-clean-up');
+		$this->afterSubmitMsg['homepage'] = <<<HTML
 <span class="dashicons dashicons-yes"></span> {$homePageSettingsUpdatedText}
 HTML;
 
-		$pageSettingsUpdatedText = __('This page\'s settings were updated. Please make sure the page\'s cache is cleared (if you\'re using a caching plugin or a server-side caching solution) to immediately have the changes applied for every visitor.', 'wp-asset-clean-up');
-		$this->updateDoneMsg['page'] = <<<HTML
+		$pageSettingsUpdatedText      = __('This page\'s settings were updated. Please make sure the page\'s cache is cleared (if you\'re using a caching plugin or a server-side caching solution) to immediately have the changes applied for every visitor.', 'wp-asset-clean-up');
+		$this->afterSubmitMsg['page'] = <<<HTML
 <span class="dashicons dashicons-yes"></span> {$pageSettingsUpdatedText}
+HTML;
+
+		$invalidNonceText = sprintf(
+            __('The changes were not saved because the security nonce has expired (it took over 24 hours since you loaded this page) or it was not sent for verification in the first place because the form was partially submitted due to the input fields being stripped.', 'wp-asset-clean-up'),
+            ini_get('max_input_vars')
+        );
+
+		$maxInputVarsValue = (int)@ini_get('max_input_vars');
+
+		if ($maxInputVarsValue === 1000) {
+			$invalidNonceText .= ' '. sprintf(__('The value of <strong>max_input_vars</strong> is <strong>1000</strong> which is the default one in many hosting accounts. Increase it to a higher number, ideally over %d.'), 4000);
+        } elseif ($maxInputVarsValue < 1000) {
+			$invalidNonceText .= ' '. sprintf(__('The value of <strong>max_input_vars</strong> is <strong>%d</strong>. That\'s below <strong>1000</strong> (the default one in many hosting accounts). Increase it to a higher number, ideally over %d.'), $maxInputVarsValue, 4000);
+		} else {
+			$invalidNonceText .= ' '. sprintf(__('The value of <strong>max_input_vars</strong> is <strong>%d</strong>. You might need to increase it to a higher number.'), $maxInputVarsValue);
+        }
+
+		$invalidNonceText .= ' <a target="_blank" href="https://www.assetcleanup.com/docs/?p=1346">'.__('How to fix it?', 'wp-asset-clean-up').'</a>';
+
+		$this->afterSubmitMsg['invalid_nonce_error'] = <<<HTML
+<span style="color: #cc0000;" class="dashicons dashicons-dismiss"></span> {$invalidNonceText}
 HTML;
 	}
 
@@ -116,7 +139,7 @@ HTML;
 
         $updateAction = Misc::getVar('post', 'wpacu_update_asset_frontend');
 
-        if (! isset($_POST[$nonceName]) || $updateAction != 1 || ! Main::instance()->frontendShow()) {
+        if ($updateAction != 1 || ! Main::instance()->frontendShow()) {
             return;
         }
 
@@ -125,15 +148,10 @@ HTML;
             return;
         }
 
-        if (! wp_verify_nonce($_POST[$nonceName], $nonceAction)) {
-            $postUrlAnchor = $_SERVER['REQUEST_URI'].'#wpacu_wrap_assets';
+        if ( ! wp_verify_nonce($_POST[$nonceName], $nonceAction) ) {
             wp_die(
-                sprintf(
-                    __('The nonce expired or is not correct, thus the request was not processed. %sPlease retry%s.', 'wp-asset-clean-up'),
-                    '<a href="'.$postUrlAnchor.'">',
-                    '</a>'
-                ),
-                __('Nonce Expired', 'wp-asset-clean-up')
+	            $this->afterSubmitMsg['invalid_nonce_error'],
+                __('Nonce is missing or has expired', 'wp-asset-clean-up')
             );
         }
 
@@ -501,7 +519,7 @@ HTML;
     {
 	?>
 	    <div class="updated notice wpacu-notice is-dismissible">
-		    <p><?php echo $this->updateDoneMsg['homepage']; ?></p>
+		    <p><?php echo $this->afterSubmitMsg['homepage']; ?></p>
 	    </div>
 	<?php
     }
@@ -513,10 +531,22 @@ HTML;
 	{
 		?>
         <div class="updated notice wpacu-notice is-dismissible">
-            <p><?php echo $this->updateDoneMsg['page']; ?></p>
+            <p><?php echo $this->afterSubmitMsg['page']; ?></p>
         </div>
 		<?php
 	}
+
+	/**
+	 *
+	 */
+	public function changesNotMadeInvalidNonce()
+    {
+        ?>
+        <div class="error notice wpacu-error is-dismissible">
+            <p><?php echo $this->afterSubmitMsg['invalid_nonce_error']; ?></p>
+        </div>
+        <?php
+    }
 
 	/**
 	 * Lite: For Singular Page (Post, Page, Custom Post Type), Front Page (Home Page), On All Pages of a specific post type (post, page or custom)
@@ -708,15 +738,7 @@ HTML;
 	    $formTargetKey   = 'wpacu_load_it_logged_in';
 	    $targetGlobalKey = 'load_it_logged_in';
 
-	    if (Misc::isValidRequest('post', WPACU_FORM_ASSETS_POST_KEY)) {
-	        // Starting from v1.1.9.9
-	        $referenceKey = WPACU_FORM_ASSETS_POST_KEY;
-	    } else {
-	        // Legacy (in case a form with the old fields is submitted)
-		    // This field is always passed when the management list submitted (to know if a handle's data is among the submitted one
-		    // Useful to avoid adding an extra hidden field (and have more submitted fields, not good for hosts with submit limit) before the checkbox
-		    $referenceKey = 'wpacu_preloads';
-	    }
+	    $referenceKey = WPACU_FORM_ASSETS_POST_KEY;
 
 	    if (! Misc::isValidRequest('post', $referenceKey)) {
 		    return;
@@ -734,14 +756,14 @@ HTML;
 
 	    foreach (array('styles', 'scripts') as $assetType) {
 		    if ( isset( $_POST[ $referenceKey ][$assetType] ) && ! empty( $_POST[ $referenceKey ][$assetType] ) ) {
-			    foreach ( array_keys( $_POST[ $referenceKey ][$assetType] ) as $styleHandle ) {
+			    foreach ( array_keys( $_POST[ $referenceKey ][$assetType] ) as $assetHandle ) {
 			        // The checkbox was ticked (it's not empty)
-				    $isSelected = isset( $_POST[$formTargetKey][$assetType][ $styleHandle ] ) && $_POST[$formTargetKey][$assetType][ $styleHandle ];
+				    $isSelected = isset( $_POST[$formTargetKey][$assetType][ $assetHandle ] ) && $_POST[$formTargetKey][$assetType][ $assetHandle ];
 
 				    if ( $isSelected ) {
-					    $existingList[$assetType][ $targetGlobalKey ][ $styleHandle ] = 1;
+					    $existingList[$assetType][ $targetGlobalKey ][ $assetHandle ] = 1;
 				    } else {
-					    unset( $existingList[$assetType][ $targetGlobalKey ][ $styleHandle ] );
+					    unset( $existingList[$assetType][ $targetGlobalKey ][ $assetHandle ] );
 
 					    // Are there no values left? Remove the empty array (free space)
 					    if (empty($existingList[$assetType][ $targetGlobalKey ])) {
@@ -1342,6 +1364,16 @@ HTML;
 	 */
 	public function ajaxClearCache()
 	{
+		if ( ! isset($_POST['wpacu_nonce']) ) {
+			echo 'Error: The security nonce was not sent for verification. Location: '.__METHOD__;
+			return;
+		}
+
+		if ( ! wp_verify_nonce($_POST['wpacu_nonce'], 'wpacu_ajax_clear_cache_nonce') ) {
+			echo 'Error: The security check has failed. Location: '.__METHOD__;
+			exit();
+		}
+
 	    if (! Menu::userCanManageAssets()) {
 	        echo 'Error: Not enough privileges to clear the cache.';
 	        exit();
@@ -1358,7 +1390,7 @@ HTML;
 	public function ajaxPreloadGuest()
     {
         // Check nonce
-	    if ( ! isset( $_POST['wpacu_ajax_preload_url_nonce'] ) || ! wp_verify_nonce( $_POST['wpacu_ajax_preload_url_nonce'], 'wpacu_ajax_preload_url_nonce' ) ) {
+	    if ( ! isset( $_POST['wpacu_nonce'] ) || ! wp_verify_nonce( $_POST['wpacu_nonce'], 'wpacu_ajax_preload_url_nonce' ) ) {
 		    echo 'Error: The security nonce is not valid.';
 		    exit();
 	    }
@@ -1393,7 +1425,7 @@ HTML;
 	    } else {
 	        // No errors
 		    echo 'Status Code: '.wp_remote_retrieve_response_code($response).' /  Page URL (preload): ' . $pageUrlPreload . "\n\n";
-		    echo (isset($response['body']) ? $response['body'] : 'No "body" key found from wp_remote_get(), the preload might not have triggered');
+		    echo isset($response['body']) ? $response['body'] : 'No "body" key found from wp_remote_get(), the preload might not have triggered';
 	    }
 
 	    exit();
@@ -1412,6 +1444,16 @@ HTML;
 		    }
 
 		    if ( $_POST['wpacu_update_asset_row_state'] !== 'yes' ) {
+			    return;
+		    }
+
+		    if ( ! isset($_POST['wpacu_nonce']) ) {
+			    echo 'Error: The security nonce was not sent for verification. Location: '.__METHOD__;
+			    return;
+		    }
+
+		    if ( ! wp_verify_nonce($_POST['wpacu_nonce'], 'wpacu_update_asset_row_state_nonce') ) {
+			    echo 'Error: The security check has failed. Location: '.__METHOD__;
 			    return;
 		    }
 

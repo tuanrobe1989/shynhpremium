@@ -299,30 +299,6 @@ if ( ! function_exists( 'bsf_notices' ) ) {
 					continue;
 				}
 
-				if ( 'registered' !== $status ) :
-
-					$url = bsf_registration_page_url( '', $product['id'] );
-
-					$message = __( 'Please', 'bsf' ) . ' <a href="' . esc_url( $url ) . '" class="bsf-core-license-form-btn" plugin-slug="' . esc_html( $product['id'] ) . '">' . __( 'activate', 'bsf' ) . '</a> ' . __( 'your copy of the', 'bsf' ) . ' <i>' . esc_html( $product['product_name'] ) . '</i> ' . __( 'to get update notifications, access to support features & other resources!', 'bsf' );
-					$message = apply_filters( "bsf_product_activation_notice_{$product['id']}", $message, $url, $product['product_name'] );
-
-					$allowed_html = array(
-						'a'      => array(
-							'href'        => array(),
-							'class'       => array(),
-							'title'       => array(),
-							'plugin-slug' => array(),
-						),
-						'br'     => array(),
-						'em'     => array(),
-						'strong' => array(),
-						'i'      => array(),
-					);
-
-					if ( ( $is_multisite && $is_network_admin ) || ! $is_multisite ) {
-						echo '<div class="notice notice-warning"><p>' . wp_kses( $message, $allowed_html ) . '</p></div>';
-					}
-				endif;
 			endforeach;
 		}
 	}

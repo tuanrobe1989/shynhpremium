@@ -5,7 +5,7 @@
  * Description: Regenerate and crop images, details and actions for image sizes registered and image sizes generated, clean up, placeholders, custom rules, register new image sizes, crop medium settings, WP-CLI commands, optimize images.
  * Text Domain: sirsc
  * Domain Path: /langs
- * Version: 6.1.0
+ * Version: 6.2.0
  * Author: Iulia Cazan
  * Author URI: https://profiles.wordpress.org/iulia-cazan
  * Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JJA37EHZXWUTJ
@@ -29,12 +29,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-define( 'SIRSC_PLUGIN_VER', 6.10 );
+define( 'SIRSC_PLUGIN_VER', 6.20 );
 define( 'SIRSC_PLUGIN_FOLDER', plugin_dir_path( __FILE__ ) );
 define( 'SIRSC_PLUGIN_DIR', SIRSC_PLUGIN_FOLDER );
 define( 'SIRSC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'SIRSC_PLUGIN_SLUG', 'sirsc' );
-define( 'SIRSC_ASSETS_VER', '20210805.1223' );
+define( 'SIRSC_ASSETS_VER', '20211205.1244' );
 define( 'SIRSC_ADONS_FOLDER', SIRSC_PLUGIN_DIR . 'adons/' );
 
 require_once SIRSC_PLUGIN_FOLDER . 'inc/debug.php';
@@ -241,8 +241,8 @@ class SIRSC_Image_Regenerate_Select_Crop {
 		}
 
 		// This is global, as the image sizes can be also registerd in the themes or other plugins.
-		add_filter( 'intermediate_image_sizes_advanced', [ $called, 'filter_ignore_global_image_sizes' ], 10, 2 );
-		add_filter( 'wp_generate_attachment_metadata', [ $called, 'wp_generate_attachment_metadata' ], 10, 2 );
+		add_filter( 'intermediate_image_sizes_advanced', [ $called, 'filter_ignore_global_image_sizes' ], 0, 2 );
+		add_filter( 'wp_generate_attachment_metadata', [ $called, 'wp_generate_attachment_metadata' ], 1, 2 );
 		add_action( 'added_post_meta', [ $called, 'process_filtered_attachments' ], 10, 4 );
 		add_filter( 'big_image_size_threshold', [ $called, 'big_image_size_threshold_forced' ], 20, 4 );
 		add_action( 'delete_attachment', [ $called, 'on_delete_attachment' ] );
@@ -390,6 +390,33 @@ class SIRSC_Image_Regenerate_Select_Crop {
 	}
 
 	/**
+	 * Get all available image sizes with their info.
+	 *
+	 * @return array
+	 */
+	public static function assess_all_wp_sizes() { //phpcs:ignore
+		$sizes = [];
+		if ( function_exists( 'wp_get_registered_image_subsizes' ) ) {
+			$sizes = wp_get_registered_image_subsizes();
+		} else {
+			$names = get_intermediate_image_sizes();
+			$added = wp_get_additional_image_sizes();
+			foreach ( $names as $name ) {
+				if ( isset( $added[ $name ] ) ) {
+					$sizes[ $name ] = $added[ $name ];
+				} else {
+					$sizes[ $name ] = [
+						'width'  => (int) get_option( $name . '_size_w' ),
+						'height' => (int) get_option( $name . '_size_h' ),
+						'crip'   => (int) get_option( $name . '_crop' ),
+					];
+				}
+			}
+		}
+		return $sizes;
+	}
+
+	/**
 	 * Exclude globally the image sizes selected in the settings from being generated on upload.
 	 *
 	 * @param array $sizes    The computed image sizes.
@@ -397,9 +424,7 @@ class SIRSC_Image_Regenerate_Select_Crop {
 	 * @return array
 	 */
 	public static function filter_ignore_global_image_sizes( $sizes, $metadata = [] ) { //phpcs:ignore
-		if ( empty( $sizes ) ) {
-			$sizes = get_intermediate_image_sizes();
-		}
+		$sizes = self::assess_all_wp_sizes();
 		if ( ! empty( self::$settings['complete_global_ignore'] ) ) {
 			foreach ( self::$settings['complete_global_ignore'] as $s ) {
 				if ( isset( $sizes[ $s ] ) ) {
@@ -414,7 +439,7 @@ class SIRSC_Image_Regenerate_Select_Crop {
 		}
 
 		$check_size = serialize( $sizes ); //phpcs:ignore
-		if ( substr_count( $check_size, 'width' ) && substr_count( $check_size, 'height' ) ) {
+		if ( ! substr_count( $check_size, 'width' ) && ! substr_count( $check_size, 'height' ) ) {
 			// Fail-fast here.
 			return [];
 		}
@@ -1497,7 +1522,6 @@ class SIRSC_Image_Regenerate_Select_Crop {
 				$execute = self::check_if_execute_size( $metadata, $size_name, $size_info, $from_file, true );
 				if ( ! empty( $execute ) || $allow_upscale ) {
 					$saved = self::image_editor( $id, $from_file, $size_name, $size_info, $small_crop, $force_quality );
-
 					if ( ! empty( $saved ) ) {
 						if ( is_wp_error( $metadata ) ) {
 							\SIRSC\Helper\debug( 'DO NOT UPDATE METADATA', true, true );
@@ -1630,6 +1654,7 @@ class SIRSC_Image_Regenerate_Select_Crop {
 		$mime_type  = $filetype['type'];
 		$image_size = getimagesize( $file );
 		$estimated  = wp_constrain_dimensions( $image_size[0], $image_size[1], $info['width'], $info['height'] );
+
 		if ( ! empty( $estimated ) && $estimated[0] === $image_size[0] && $estimated[1] === $image_size[1] ) {
 			$meta = wp_get_attachment_metadata( $id );
 
@@ -1906,13 +1931,13 @@ class SIRSC_Image_Regenerate_Select_Crop {
 				$initial_unique = $metadata['original_image'];
 				$unique         = wp_unique_filename( $info['path'], $metadata['original_image'] );
 
-				// Remove the initial original file id that is not used by another attachment.
+				// Remove the initial original file if that is not used by another attachment.
 				if ( file_exists( $info['path'] . $metadata['original_image'] )
 					&& $metadata['original_image'] !== $unique ) {
 					@unlink( $info['path'] . $metadata['original_image'] ); //phpcs:ignore
 				}
 
-				// Rename the full size as  the initial original file.
+				// Rename the full size as the initial original file.
 				if ( file_exists( $info['path'] . $info['name'] ) ) {
 					@rename( $info['path'] . $info['name'], $info['path'] . $unique ); //phpcs:ignore
 				}
@@ -2454,7 +2479,14 @@ class SIRSC_Image_Regenerate_Select_Crop {
 				return $initial_value;
 			}
 
-			$estimated = wp_constrain_dimensions( $imagesize[0], $imagesize[1], $size['width'], $size['height'] );
+			if ( empty( $size['width'] ) ) {
+				$size['width'] = 0;
+			}
+			if ( empty( $size['height'] ) ) {
+				$size['height'] = 0;
+			}
+
+			$estimated = wp_constrain_dimensions( (int) $imagesize[0], (int) $imagesize[1], $size['width'], $size['height'] );
 			\SIRSC\Helper\debug( 'Estimated before applying threshold ' . print_r( $estimated, 1 ), true, true ); //phpcs:ignore
 
 			$relative = $estimated[0];
@@ -2534,6 +2566,45 @@ class SIRSC_Image_Regenerate_Select_Crop {
 					'mime-type' => $filetype['type'],
 				];
 			}
+			update_post_meta( $attachment_id, '_wp_attachment_metadata', $filter_out );
+		} else {
+			$uploads = wp_get_upload_dir();
+			if ( substr_count( $filter_out['file'], '-scaled.' ) ) {
+				$initial                      = $filter_out['file'];
+				$filter_out['file']           = str_replace( '-scaled.', '.', $filter_out['file'] );
+				$filter_out['original_image'] = wp_basename( str_replace( '-scaled.', '.', $filter_out['file'] ) );
+				update_attached_file( $attachment_id, $filter_out['file'] );
+			} else {
+				$initial = str_replace( '.', '-scaled.', $filter_out['file'] );
+			}
+			if ( ! empty( self::$settings['force_original_to'] ) ) {
+				$filetype = wp_check_filetype( trailingslashit( $uploads['basedir'] ) . $filter_out['file'] );
+
+				$filter_out['sizes'][ self::$settings['force_original_to'] ] = [
+					'file'      => wp_basename( $filter_out['file'] ),
+					'width'     => $filter_out['width'],
+					'height'    => $filter_out['height'],
+					'mime-type' => $filetype['type'],
+				];
+			}
+			if ( ! empty( $filter_out['sizes'] ) ) {
+				foreach ( $filter_out['sizes'] as $size => $size_info ) {
+					if ( (int) $size_info['width'] === (int) $filter_out['width']
+						&& (int) $size_info['height'] === (int) $filter_out['height']
+					) {
+						$maybe = str_replace( '.', '-' . $size_info['width'] . 'x' . $size_info['height'] . '.', $filter_out['file'] );
+						$maybe = trailingslashit( $uploads['basedir'] ) . $maybe;
+						if ( file_exists( $maybe ) ) {
+							@unlink( $maybe ); //phpcs:ignore
+						}
+					}
+				}
+			}
+
+			if ( ! empty( $initial ) && file_exists( trailingslashit( $uploads['basedir'] ) . $initial ) ) {
+				@unlink( trailingslashit( $uploads['basedir'] ) . $initial ); //phpcs:ignore
+			}
+
 			update_post_meta( $attachment_id, '_wp_attachment_metadata', $filter_out );
 		}
 

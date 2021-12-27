@@ -60,7 +60,7 @@
                 @include flex;
                 @include flex-direction(column);
                 @include align-items(center);
-                @include justify-content(center);
+                @include justify-content(top);
                 background: $white;
             }
 
@@ -76,19 +76,17 @@
 
             &--img {
                 width: 100%;
-                max-width: 200px;
+                height: auto;
                 box-sizing: border-box;
-                padding: 10px;
                 background-color: $grey;
-                border-radius: 50%;
                 @include transition_default(0.3s);
-                &:hover {
-                    background: $yellow;
-                }
+                // &:hover {
+                //     background: $yellow;
+                // }
 
-                &.actived {
-                    background: $yellow;
-                }
+                // &.actived {
+                //     background: $yellow;
+                // }
             }
         }
     }

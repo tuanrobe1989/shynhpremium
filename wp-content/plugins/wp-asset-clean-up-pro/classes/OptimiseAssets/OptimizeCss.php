@@ -467,7 +467,7 @@ class OptimizeCss
 	public static function alterHtmlSource($htmlSource)
 	{
 		// There has to be at least one "<link" or "<style", otherwise, it could be a feed request or something similar (not page, post, homepage etc.)
-		if ( (stripos($htmlSource, '<link') === false && stripos($htmlSource, '<style') === false) || array_key_exists('wpacu_no_optimize_css', $_GET) ) {
+		if ( (stripos($htmlSource, '<link') === false && stripos($htmlSource, '<style') === false) || isset($_GET['wpacu_no_optimize_css']) ) {
 			return $htmlSource;
 		}
 
@@ -885,7 +885,7 @@ class OptimizeCss
 		}
 
 		// Deactivate it for debugging purposes via query string /?wpacu_no_inline_js
-		if (array_key_exists('wpacu_no_inline_css', $_GET)) {
+		if ( isset($_GET['wpacu_no_inline_css']) ) {
 			return false;
 		}
 

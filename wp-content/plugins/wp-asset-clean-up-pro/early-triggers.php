@@ -8,7 +8,7 @@ if (! defined('ABSPATH')) {
 define('WPACU_EARLY_TRIGGERS_CALLED', true);
 // [/wpacu_pro]
 
-if (array_key_exists('wpacu_clean_load', $_GET)) {
+if ( isset($_GET['wpacu_clean_load']) ) {
 	// Autoptimize
 	$_GET['ao_noptimize'] = $_REQUEST['ao_noptimize'] = '1';
 
@@ -246,7 +246,7 @@ if (! function_exists('assetCleanUpHasNoLoadMatches')) {
 
 					$dbPageUrl = $postPageOptions['_page_uri'];
 					$dbPageUri = str_replace( $rootUrl, '', $dbPageUrl );
-					
+
 					if ( ( $dbPageUri === $targetUri ) || ( strpos( $targetUri, $dbPageUri ) === 0 ) ) {
 						$GLOBALS['wpacu_no_load_matches'][$targetUri] = 'is_set_in_page';
 						return $GLOBALS['wpacu_no_load_matches'][$targetUri];
@@ -274,14 +274,14 @@ if (! function_exists('assetCleanUpNoLoad')) {
 		}
 
 		// Hide top WordPress admin bar on request for debugging purposes and a cleared view of the tested page
-		if ( array_key_exists( 'wpacu_no_admin_bar', $_GET ) ) {
+		if ( isset($_REQUEST['wpacu_no_admin_bar']) ) {
 			add_filter( 'show_admin_bar', '__return_false', PHP_INT_MAX );
 		}
 
 		// On request: for debugging purposes - e.g. https://yourwebsite.com/?wpacu_no_load
 		// Also make sure it's in the REQUEST URI and $_GET wasn't altered incorrectly before it's checked
 		// Technically, it will be like the plugin is not activated: no global settings and unload rules will be applied
-		if ( array_key_exists( 'wpacu_no_load', $_GET ) && strpos( $_SERVER['REQUEST_URI'], 'wpacu_no_load' ) !== false ) {
+		if ( isset($_GET['wpacu_no_load'], $_SERVER['REQUEST_URI']) && strpos( $_SERVER['REQUEST_URI'], 'wpacu_no_load' ) !== false ) {
 			define( 'WPACU_NO_LOAD_SET', true );
 
 			return true;

@@ -127,13 +127,24 @@ function status() {
 					$keys = $allow[ $section ];
 				}
 				foreach ( $keys as $key ) {
-					$details .= PHP_EOL . '- ' . esc_html( $item['fields'][ $key ]['label'] ) . ': ' . esc_html( $item['fields'][ $key ]['value'] );
+					if ( isset( $item['fields'][ $key ]['label'] ) ) {
+						$details .= PHP_EOL . '- '
+						. esc_html( $item['fields'][ $key ]['label'] )
+						. ': ';
+						if ( is_scalar( $item['fields'][ $key ]['value'] ) ) {
+							$details .= esc_html( $item['fields'][ $key ]['value'] );
+						} else {
+							$details .= esc_html( print_r( $item['fields'][ $key ]['value'], true ) ); //phpcs:ignore
+						}
+					}
 				}
 				$details .= PHP_EOL;
 			}
 		}
 
-		$details = str_replace( $info['wp-paths-sizes']['fields']['wordpress_path']['value'], '{{ROOT}}', $details );
+		if ( isset( $info['wp-paths-sizes'] ) ) {
+			$details = str_replace( $info['wp-paths-sizes']['fields']['wordpress_path']['value'], '{{ROOT}}', $details );
+		}
 	}
 
 	if ( ! empty( $details ) ) {
@@ -303,7 +314,16 @@ function log_read( string $name = 'tracer' ) : string {
 	$path = SIRSC_PLUGIN_DIR . 'log';
 	$file = $path . '/' . esc_attr( $name ) . '.log';
 	if ( is_file( $file ) ) {
-		return $fs->get_contents( $file );
+		$content = $fs->get_contents( $file );
+		if ( 'tracer' === $name || 'bulk' === $name ) {
+			$count = substr_count( $content, PHP_EOL );
+			if ( $count >= 5000 ) {
+				$lines   = explode( PHP_EOL, $content );
+				$lines   = array_slice( $lines, 0, 3500 );
+				$content = implode( PHP_EOL, $lines );
+			}
+		}
+		return $content;
 	}
 	return '';
 }

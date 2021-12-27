@@ -9,7 +9,7 @@ if (! isset($data)) {
 	exit;
 }
 
-$wpacuSubPage = (array_key_exists('wpacu_sub_page', $_GET) && $_GET['wpacu_sub_page']) ? $_GET['wpacu_sub_page'] : 'manage_css_js';
+$wpacuSubPage = (isset($_GET['wpacu_sub_page']) && $_GET['wpacu_sub_page']) ? $_GET['wpacu_sub_page'] : 'manage_css_js';
 $criticalCssIsGlobalDisabled = $data['wpacu_settings']['critical_css_status'] === 'off';
 
 include_once '_top-area.php';

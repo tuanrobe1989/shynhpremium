@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Asset CleanUp Pro: Page Speed Booster
  * Plugin URI: https://www.gabelivan.com/items/wp-asset-cleanup-pro/
- * Version: 1.1.9.9
+ * Version: 1.2.0.2
  * Description: Prevent Chosen Scripts & Styles from loading to reduce HTTP Requests and get faster page load | Add "async" & "defer" attributes to loaded JS | Combine/Minify CSS/JS files
  * Author: Gabe Livan
  * Author URI: http://www.gabelivan.com/
@@ -10,7 +10,7 @@
  * Domain Path: /languages
 */
 
-define('WPACU_PRO_PLUGIN_VERSION', '1.1.9.9');
+define('WPACU_PRO_PLUGIN_VERSION', '1.2.0.2');
 
 // Make sure the Lite constant is defined in case other plugins (such as Oxygen Builder) use it
 if (! defined('WPACU_PLUGIN_VERSION')) {
@@ -78,7 +78,7 @@ if ($wpacuWrongPhp && is_admin()) { // Dashboard
 
 	         '</p></div>';
 
-	    if (array_key_exists('active', $_GET)) {
+	    if (isset($_GET['active'])) {
 		    unset($_GET['activate']);
 	    }
     });
@@ -93,7 +93,7 @@ define('WPACU_PLUGIN_FEATURE_REQUEST_URL', 'https://www.gabelivan.com/asset-clea
 
 // Global Values
 define('WPACU_LOAD_ASSETS_REQ_KEY',  WPACU_PLUGIN_ID . '_load');
-define('WPACU_FORM_ASSETS_POST_KEY', WPACU_PLUGIN_ID.'_form_assets'); // starting from Pro version 1.1.9.9
+define('WPACU_FORM_ASSETS_POST_KEY', WPACU_PLUGIN_ID.'_form_assets'); // starting from Pro version 1.1.9.9 & Lite version 1.3.8.1
 
 $wpacuGetLoadedAssetsAction = ((isset($_REQUEST[WPACU_LOAD_ASSETS_REQ_KEY]) && $_REQUEST[WPACU_LOAD_ASSETS_REQ_KEY])
                                || (isset($_REQUEST['action']) && $_REQUEST['action'] === WPACU_PLUGIN_ID.'_get_loaded_assets'));
@@ -101,9 +101,9 @@ define('WPACU_GET_LOADED_ASSETS_ACTION', $wpacuGetLoadedAssetsAction);
 
 require_once WPACU_PLUGIN_DIR.'/wpacu-load.php';
 
-$isDashboardManageAssets = array_key_exists('page', $_GET) && ($_GET['page'] === WPACU_PLUGIN_ID . '_assets_manager');
-$isDashboardCriticalCssPage = ( array_key_exists( 'wpacu_sub_page', $_GET ) && $_GET['wpacu_sub_page'] === 'manage_critical_css' );
-$isDashboardPluginsPage = ( array_key_exists( 'wpacu_sub_page', $_GET ) && (strpos($_GET['wpacu_sub_page'], 'manage_plugins_') === 0) );
+$isDashboardManageAssets    = isset( $_GET['page'] ) && ( $_GET['page'] === WPACU_PLUGIN_ID . '_assets_manager' );
+$isDashboardCriticalCssPage = isset( $_GET['wpacu_sub_page'] ) && ( $_GET['wpacu_sub_page'] === 'manage_critical_css' );
+$isDashboardPluginsPage     = isset( $_GET['wpacu_sub_page'] ) && ( strpos( $_GET['wpacu_sub_page'], 'manage_plugins_' ) === 0 );
 
 // In which situations should the composer libraries be loaded?
 // Only load them when necessary

@@ -69,7 +69,7 @@ class PluginTracking
 	 */
 	public function opt_in_out($isAjaxCall = false)
 	{
-	    if (! array_key_exists('wpacu_action', $_REQUEST)) {
+	    if ( ! isset($_REQUEST['wpacu_action']) ) {
 	        return false;
         }
 
@@ -314,7 +314,7 @@ class PluginTracking
 	public function show_tracking_notice()
 	{
 	    // On URL request (for debugging)
-		if (array_key_exists('wpacu_show_tracking_notice', $_GET)) {
+		if ( isset($_GET['wpacu_show_tracking_notice']) ) {
 			return true;
 		}
 

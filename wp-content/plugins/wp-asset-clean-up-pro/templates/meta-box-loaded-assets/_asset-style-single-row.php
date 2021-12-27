@@ -92,7 +92,7 @@ if (isset($data['handle_rows_contracted']['styles'][$data['row']['obj']->handle]
 
 	        include '_asset-style-single-row/_position.php';
 
-		    if (isset($data['row']['obj']->src) && $data['row']['obj']->src) {
+		    if (isset($data['row']['obj']->src) && trim($data['row']['obj']->src)) {
 			    $extraInfo[] = __('File Size:', 'wp-asset-clean-up') . ' <em>' . $data['row']['obj']->size . '</em>';
 		    }
 
