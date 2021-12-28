@@ -142,25 +142,39 @@ function image_downsize_placeholder_only_missing( $f, $id, $s ) { //phpcs:ignore
 			error_log( 'sirsc exception ' . print_r( $e, 1 ) ); //phpcs:ignore
 		}
 	}
+
+	// Fallback.
+	$img_url = image_placeholder_for_image_size( $s, false, true );
+	if ( ! empty( $img_url ) ) {
+		$placeholder = [ $img_url, (int) $s[0], (int) $s[1], false ];
+		return $placeholder;
+	} else {
+		return;
+	}
 }
 
 /**
  * Generate a placeholder image for a specified image size name.
  *
  * @param string  $selected_size The selected image size slug.
- * @param boolean $force_update  True is the update is forced, to clear the cache.
+ * @param boolean $force_update  True if the update is forced, to clear the cache.
+ * @param boolean $execute       True if the image size should be used as such.
  */
-function image_placeholder_for_image_size( $selected_size, $force_update = false ) { //phpcs:ignore
+function image_placeholder_for_image_size( $selected_size, $force_update = false, $execute = false ) { //phpcs:ignore
 	if ( empty( $selected_size ) ) {
 		$selected_size = 'full';
 	}
 
 	$alternative = \SIRSC\Helper\maybe_match_size_name_by_width_height( $selected_size );
 	if ( ! is_scalar( $selected_size ) ) {
-		if ( ! empty( $alternative ) ) {
-			$selected_size = $alternative;
-		} else {
+		if ( true === $execute ) {
 			$selected_size = implode( 'x', $selected_size );
+		} else {
+			if ( ! empty( $alternative ) ) {
+				$selected_size = $alternative;
+			} else {
+				$selected_size = implode( 'x', $selected_size );
+			}
 		}
 	}
 

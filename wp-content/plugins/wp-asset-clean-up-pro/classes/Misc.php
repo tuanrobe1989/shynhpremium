@@ -103,19 +103,17 @@ class Misc
 	 */
 	public static function isHttpsSecure()
 	{
-		$isSecure = false;
-
-		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
-			$isSecure = true;
-		} elseif (
-			( ! empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' )
-			|| ( ! empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on' )
-		) {
-			// Is it behind a load balancer?
-			$isSecure = true;
+		if ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ) {
+			return true;
 		}
 
-		return $isSecure;
+		if ( ( ! empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' )
+		     || ( ! empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on' ) ) {
+			// Is it behind a load balancer?
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -1213,6 +1211,10 @@ SQL;
 
 	    $allActivePluginsIcons = self::fetchActiveFreePluginsIcons(true) ?: array();
 
+	    if ( ! is_array($allActivePluginsIcons) ) {
+		    $allActivePluginsIcons = array();
+	    }
+
 	    foreach (self::getActivePlugins() as $activePlugin) {
 		    if (strpos($activePlugin, '/') !== false) {
 			    list ($pluginSlug) = explode('/', $activePlugin);
@@ -1648,7 +1650,7 @@ SQL;
 	 */
 	public static function scriptExecTimer($name, $action = 'start')
 	{
-		if (! array_key_exists('wpacu_debug', $_GET)) {
+		if (! isset($_GET['wpacu_debug'])) {
 			return ''; // only trigger it in debugging mode
 		}
 

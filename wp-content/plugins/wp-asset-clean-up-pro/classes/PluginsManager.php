@@ -81,7 +81,7 @@ class PluginsManager
             }
 
 			// 2) For listing them within "Plugins Manager" -> "In Frontend View" or "In the Dashboard" when the admin is managing the rules
-			$wpacuSubPage = (array_key_exists('wpacu_sub_page', $_GET) && $_GET['wpacu_sub_page']) ? $_GET['wpacu_sub_page'] : 'manage_plugins_front';
+			$wpacuSubPage = ( isset($_GET['wpacu_sub_page']) && $_GET['wpacu_sub_page'] ) ? $_GET['wpacu_sub_page'] : 'manage_plugins_front';
 
 			$mainGlobalKey = ($wpacuSubPage === 'manage_plugins_front') ? 'plugins' : 'plugins_dash';
 
@@ -205,7 +205,7 @@ class PluginsManager
 			delete_transient('wpacu_plugins_manager_updated');
 
 			$appliedForText = '';
-			if (array_key_exists('wpacu_sub_page', $_GET)) {
+			if ( isset($_GET['wpacu_sub_page']) ) {
 				if ( $_GET['wpacu_sub_page'] === 'manage_plugins_front' ) {
 					$appliedForText = 'the frontend view';
 				} elseif ( $_GET['wpacu_sub_page'] === 'manage_plugins_dash' ) {

@@ -9,6 +9,12 @@ if (! isset($data)) {
 if (! defined('WPACU_USE_MODAL_BOX')) {
 	define('WPACU_USE_MODAL_BOX', true);
 }
+
+$possibleWpacuFor = array('everywhere', 'post_types', 'taxonomies', 'authors', 'search_results', 'dates', '404_not_found');
+
+if ( ! in_array($data['for'], $possibleWpacuFor) ) {
+    exit('Invalid request');
+}
 ?>
 <nav class="nav-tab-wrapper">
     <a href="<?php echo admin_url('admin.php?page=wpassetcleanup_bulk_unloads'); ?>" class="nav-tab <?php if ($data['for'] === 'everywhere') { ?>nav-tab-active<?php } ?>">Everywhere</a>

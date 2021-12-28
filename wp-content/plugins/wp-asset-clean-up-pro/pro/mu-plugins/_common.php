@@ -4,7 +4,7 @@ if ( ! defined('WP_PLUGIN_DIR') ) {
 }
 
 // For debugging purposes
-if (array_key_exists('wpacu_clean_load', $_GET)) {
+if ( isset($_GET['wpacu_clean_load']) ) {
 	// Autoptimize
 	$_GET['ao_noptimize'] = $_REQUEST['ao_noptimize'] = '1';
 
@@ -31,12 +31,12 @@ if ( ! function_exists('wpacuTriggerPluginsFilter') ) {
 	function wpacuTriggerPluginsFilter()
 	{
 		// When these debugging query strings are used, do not filter any active plugins and load them all
-		if ( array_key_exists( 'wpacu_no_plugin_unload', $_GET ) || array_key_exists( 'wpacu_no_load', $_GET ) ) {
+		if ( isset($_GET['wpacu_no_plugin_unload']) || isset($_GET['wpacu_no_load']) ) {
 			return false;
 		}
 
 		if ( is_admin() ) {
-			if ( array_key_exists( 'wpacu_no_dash_plugin_unload', $_GET ) ) {
+			if ( isset($_GET['wpacu_no_dash_plugin_unload']) ) {
 				return false;
 			}
 
@@ -98,6 +98,13 @@ if ( ! function_exists('wpacuTriggerPluginsFilter') ) {
 
 		// Check for any query strings meant to to be used for debugging purposes to load or unload certain plugins
 		if ( isset( $_GET['wpacu_filter_plugins'] ) || isset( $_GET['wpacu_only_load_plugins'] ) ) {
+			return true;
+		}
+
+		// Plugins selectively unloaded from a form within /?wpacu_debug (bottom of the page)
+		$wpacuIsUnloadPluginsViaDebugForm = (isset($_POST['wpacu_filter_plugins']) && is_array($_POST['wpacu_filter_plugins']) && ! empty($_POST['wpacu_filter_plugins'])) || (isset($_POST['wpacu_debug']) && $_POST['wpacu_debug'] === 'on');
+
+		if ($wpacuIsUnloadPluginsViaDebugForm) {
 			return true;
 		}
 

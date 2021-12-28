@@ -16,7 +16,7 @@
 define('SHYNH', 'SHYNH');
 global $global_services;
 define('API_CRM_ROOT', 'https://shynhhouse.cloudpro.vn/api/WebsiteApi.php');
-define('API_CRM_ACCESS_KEY', 'i2Ue96CiSxyWTTY3');
+define('API_CRM_ACCESS_KEY', 'T5i0mVyrJP2AsjcN');
 define('API_FLAG', TRUE);
 global $home_id;
 $home_id = get_option('page_on_front');

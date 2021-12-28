@@ -251,7 +251,7 @@ class Preloads
 		if (array_key_exists($handle, $this->preloads['styles']) && $this->preloads['styles'][$handle]) {
 		    // [wpacu_pro]
             if ($this->preloads['styles'][$handle] === 'async') {
-	            if (isset($_GET['wpacu_no_css_preload_async'])) { // do not apply it for debugging purposes
+	            if (isset($_REQUEST['wpacu_no_css_preload_async'])) { // do not apply it for debugging purposes
 		            return str_replace('<link ', '<link data-wpacu-skip-preload=\'1\' ', $htmlTag);
 	            }
 
@@ -259,7 +259,7 @@ class Preloads
             }
             // [/wpacu_pro]
 
-            if (isset($_GET['wpacu_no_css_preload_basic'])) { // do not apply it for debugging purposes
+            if (isset($_REQUEST['wpacu_no_css_preload_basic'])) { // do not apply it for debugging purposes
 	            return str_replace('<link ', '<link data-wpacu-skip-preload=\'1\' ', $htmlTag);
             }
 
@@ -281,7 +281,7 @@ class Preloads
 			return $htmlTag;
 		}
 
-		if (isset($_GET['wpacu_no_js_preload_basic'])) {
+		if (isset($_REQUEST['wpacu_no_js_preload_basic'])) {
 			return str_replace('<script ', '<script data-wpacu-skip-preload=\'1\' ', $htmlTag);
         }
 

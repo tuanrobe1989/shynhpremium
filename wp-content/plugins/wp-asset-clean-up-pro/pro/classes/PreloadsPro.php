@@ -59,7 +59,7 @@ class PreloadsPro
 		}
 
 		// Debugging? /?wpacu_preload_css_async -> print it
-		if (array_key_exists('wpacu_preload_css_async', $_GET) && $_GET['wpacu_preload_css_async']) {
+		if ( isset($_GET['wpacu_preload_css_async']) && $_GET['wpacu_preload_css_async'] ) {
 			return Misc::preloadAsyncCssFallbackOutput();
 		}
 

@@ -43,7 +43,7 @@ if (isset($data['handle_rows_contracted']['scripts'][$data['row']['obj']->handle
         <?php
         $insideIeCommentHtml = '<span class="wpacu_inside_cond_comm"><img style="vertical-align: middle;" width="25" height="25" src="'.WPACU_PLUGIN_URL.'/assets/icons/icon-ie.svg" alt="" title="Microsoft / Public domain" />&nbsp;<span style="font-weight: 400; color: #1C87CF;">Loads only in Internet Explorer based on the following condition:</span> <em>if '.$data['row']['obj']->inside_conditional_comment.'</em></span>';
 
-        if (isset($data['row']['obj']->src) && $data['row']['obj']->src) {
+        if (isset($data['row']['obj']->src) && trim($data['row']['obj']->src)) {
 	        // Source
 	        include '_asset-script-single-row-hardcoded/_source.php';
 	        ?>

@@ -25,7 +25,7 @@ class MatchMediaLoadPro
 	 */
 	public function alterHtmlSourceForMediaQueriesLoadCss($htmlSource)
 	{
-		if (array_key_exists('wpacu_no_media_query_load_for_css', $_GET)) {
+		if ( isset($_GET['wpacu_no_media_query_load_for_css']) ) {
 			return $htmlSource;
 		}
 
@@ -84,7 +84,7 @@ class MatchMediaLoadPro
 	 */
 	public function alterHtmlSourceForMediaQueriesLoadJs($htmlSource)
 	{
-		if (array_key_exists('wpacu_no_media_query_load_for_js', $_GET)) {
+		if ( isset($_GET['wpacu_no_media_query_load_for_js']) ) {
 			return $htmlSource;
 		}
 

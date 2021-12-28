@@ -48,7 +48,7 @@ class CriticalCssPro
 	        return; // Not within any admin page, so stop here
 	    }
 
-		$wpacuSubPage = ( array_key_exists( 'wpacu_sub_page', $_GET ) && $_GET['wpacu_sub_page'] );
+		$wpacuSubPage = ( isset($_GET['wpacu_sub_page']) && $_GET['wpacu_sub_page'] );
 
 		if ( $wpacuSubPage === 'manage_critical_css' ) {
 			add_action( 'admin_init', function() {
@@ -96,7 +96,7 @@ class CriticalCssPro
 		}
 
 		// For debugging purposes, do not print any critical CSS, nor preload any of the LINk tags (with rel="stylesheet")
-		if (array_key_exists('wpacu_no_critical_css_and_preload', $_GET)) {
+		if ( isset($_GET['wpacu_no_critical_css_and_preload']) ) {
 			return str_replace(self::CRITICAL_CSS_MARKER, '', $htmlSource);
 		}
 
@@ -132,7 +132,7 @@ class CriticalCssPro
 		 * 2) /?wpacu_no_critical_css to ONLY load the non-render blocking LINK tags (non-critical)
 		 * For a cleaner load, &wpacu_no_admin_bar can be added to avoid loading the top admin bar
 		*/
-		if (array_key_exists('wpacu_only_critical_css', $_GET)) {
+		if ( isset($_GET['wpacu_only_critical_css']) )  {
 			// For debugging purposes: preview how the page would load only with the critical CSS loaded (all LINK/STYLE CSS tags are stripped)
             // Do not remove the admin bar's (and other marked ones) CSS as it would make sense to keep it as it is if the admin is logged-in
 			$htmlSource = preg_replace('#<link(.*?)data-wpacu-skip-preload#Umi', "<wpacu_link$1data-wpacu-skip-preload", $htmlSource);
@@ -206,7 +206,7 @@ class CriticalCssPro
 
 		// For debugging purposes: preview how the page would load without critical CSS & all the non-render blocking CSS files loaded
 		// It should show a flash of unstyled content: https://en.wikipedia.org/wiki/Flash_of_unstyled_content
-		if (array_key_exists('wpacu_no_critical_css', $_GET)) {
+		if ( isset($_GET['wpacu_no_critical_css']) ) {
 			$criticalCssStyleTag = '';
 		}
 

@@ -58,7 +58,6 @@ function setup_crm()
 {
     global $global_services;
     $home_id = get_option('page_on_front');
-
     if (API_FLAG == TRUE) :
         $global_services = get_field('general_crm_fields', $home_id);
     endif;

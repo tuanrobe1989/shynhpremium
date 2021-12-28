@@ -14,9 +14,9 @@ if (! isset($data)) {
             ?>
                 <div class="wpacu-updated-frontend"><em>
                         <?php if (\WpAssetCleanUp\Misc::isHomePage()) {
-                            echo $updateClass->updateDoneMsg['homepage'];
+                            echo $updateClass->afterSubmitMsg['homepage'];
                         } else {
-	                        echo $updateClass->updateDoneMsg['page'];
+	                        echo $updateClass->afterSubmitMsg['page'];
                         } ?>
                     </em></div>
             <?php

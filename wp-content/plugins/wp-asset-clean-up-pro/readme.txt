@@ -2,13 +2,36 @@
 Contributors: gabelivan
 Tags: minify css, minify javascript, defer css javascript, page speed, dequeue, performance
 Requires at least: 4.5
-Tested up to: 5.8
-Stable tag: 1.1.9.9
+Tested up to: 5.8.2
+Stable tag: 1.2.0.2
 License: Commercial
 
 There are often times when you are using a theme and a number of plugins which are enabled and run on the same page. However, you don’t need to use all of them and to improve the speed of your website and make the HTML source code cleaner (convenient for debugging purposes), it’s better to prevent those styles and scripts from loading.
 
 == Changelog ==
+= <strong>1.2.0.2</strong> - 23 November 2021
+* Added the "wpacu_settings" filter - add_filter() - so the plugin's "Settings" can be altered via code (e.g. adding if clauses programmatically to alter the value of a certain textarea or have an option disabled on specific pages) when necessary
+* Prevent the following option from being accidentally disabled: 'Ignore dependency rule and keep the "children" loaded' (e.g. in rare cases, some CSS/JS have dependencies on certain pages only)
+* Fix: Added nonce checks for every WordPress AJAX call to improve security
+
+= <strong>1.2.0.1</strong> - 14 September 2021
+* Automatically preload any combined JS files within the BODY tag (that do not have any "defer" or "async" attribute) to improve the Google PageSpeed Insights score for the following: "Preload key requests"
+* Reorganised the layout for "Manage in the Dashboard" from "Settings" -> "Plugin Usage Preferences"
+* Fix: When minifying CSS content, do not strip the extra calc() when something like the following is used: "calc( 50% - 22px ) calc( 50% - 22px )"
+* Fix: When Gutenberg editor is used and the post is updated, sometimes the CSS/JS manager is reloaded BEFORE the changes are saved showing the same state as it used to be confusing the admin that the changes weren't applied
+
+= <strong>1.2.0.0</strong> - 29 August 2021
+* If the security nonce is expired or not sent when certain forms are submitted, show an error message about the potential problems and how to fix them without showing the standard "Link has expired" error
+* Added the plugin version under the "Pro" text next to the logo
+* WPML Fix: Load the combined CSS/JS files from the right domain to avoid any CORS policy issues (in case there are multiple domains for each language)
+* Fix: The CSS/JS manager form wasn't submitting when "Do not load Asset CleanUp Pro on this page (this will disable any functionality of the plugin)" was enabled
+* Fix: Make sure the loading exception rule if the user is logged-in is saving correctly
+* Fix: Do not show the "loading based on screen size" area if there is no SRC attached to the handle (e.g. "woocommerce-inline" handle)
+* Fix: Do not print anything whenever a cron job is triggered (this is only for debugging)
+* Fix: Assets' position was not shown correctly within the Dashboard (HEAD instead of BODY)
+* Fix: Do not trigger any cache clearing and page preloading if the post status is "draft" (after the post is saved)
+* Fix: Avoid changing the update plugin link as "Plugin failed" should not be a problem anymore
+
 = <strong>1.1.9.9</strong> - 31 July 2021
 * Compatibility with FlyWheel hosting accounts (and other hosting accounts using the same pattern): The WordPress root directory is different than the ABSPATH one in relation to the "wp-content" directory where all or most of the CSS/JS files are located (e.g. the file size wasn't calculated for the static files before this change, which is needed for certain plugin functionality such as calculating small files for inlining)
 * Compatibility fix: Whenever the 'active_plugins' option is updated incorrectly by another plugin, it might contain the filtered list done via "option_active_plugins" and not the original list; Put back the missing plugins to avoid ending up with site-wide deactivated plugins (the ones with unloading rules in "Plugins Manager")

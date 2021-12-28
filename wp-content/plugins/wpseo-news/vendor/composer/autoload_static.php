@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3a9c372df5d1beaa93769135da770d43
+class ComposerStaticInitd879a6186fa6b4862236963c822d1c49
 {
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
@@ -21,7 +21,6 @@ class ComposerStaticInit3a9c372df5d1beaa93769135da770d43
         'WPSEO_News_Schema' => __DIR__ . '/../..' . '/classes/schema.php',
         'WPSEO_News_Settings_Genre_Removal_Alert' => __DIR__ . '/../..' . '/classes/integrations/settings-genre-removal-alert.php',
         'WPSEO_News_Sitemap' => __DIR__ . '/../..' . '/classes/sitemap.php',
-        'WPSEO_News_Sitemap_Images' => __DIR__ . '/../..' . '/classes/sitemap-images.php',
         'WPSEO_News_Sitemap_Item' => __DIR__ . '/../..' . '/classes/sitemap-item.php',
         'WPSEO_News_Upgrade_Manager' => __DIR__ . '/../..' . '/classes/upgrade-manager.php',
         'Yoast_I18n_WordPressOrg_v3' => __DIR__ . '/..' . '/yoast/i18n-module/src/i18n-wordpressorg-v3.php',
@@ -31,7 +30,7 @@ class ComposerStaticInit3a9c372df5d1beaa93769135da770d43
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->classMap = ComposerStaticInit3a9c372df5d1beaa93769135da770d43::$classMap;
+            $loader->classMap = ComposerStaticInitd879a6186fa6b4862236963c822d1c49::$classMap;
 
         }, null, ClassLoader::class);
     }

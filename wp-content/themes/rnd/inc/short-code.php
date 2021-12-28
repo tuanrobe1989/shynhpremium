@@ -21,7 +21,7 @@ function list_gift_func($args){
     if($post):
         ob_start();
         get_template_part('inc/short-code-view/list-gifts.view','',array(
-            'list_gifts' => get_field('list_gifts',$post_id)
+            'list_gifts' => get_field('promotions',$post_id)
         ));
         return ob_get_clean();
     endif;

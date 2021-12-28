@@ -49,7 +49,7 @@ class OptimizeJsPro
 		}
 
 		// Deactivate it for debugging purposes via query string /?wpacu_no_inline_js
-		if (array_key_exists('wpacu_no_inline_js', $_GET)) {
+		if ( isset($_GET['wpacu_no_inline_js']) ) {
 			return false;
 		}
 

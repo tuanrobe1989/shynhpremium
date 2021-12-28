@@ -155,8 +155,8 @@ class CombineJs
 								$getInlineAssociatedWithHandle = OptimizeJs::getInlineAssociatedWithScriptHandle($handleToCheck, $wpacuRegisteredScripts, 'handle');
 
 								if ( ($getInlineAssociatedWithHandle['data'] || $getInlineAssociatedWithHandle['before'] || $getInlineAssociatedWithHandle['after'])
-									|| in_array(trim($tagObject->nodeValue), array($getInlineAssociatedWithHandle['data'], $getInlineAssociatedWithHandle['before'], $getInlineAssociatedWithHandle['after']))
-									|| (strpos(trim($tagObject->nodeValue), '/* <![CDATA[ */') === 0 && Misc::endsWith(trim($tagObject->nodeValue), '/* ]]> */')) ) {
+								     || in_array(trim($tagObject->nodeValue), array($getInlineAssociatedWithHandle['data'], $getInlineAssociatedWithHandle['before'], $getInlineAssociatedWithHandle['after']))
+								     || (strpos(trim($tagObject->nodeValue), '/* <![CDATA[ */') === 0 && Misc::endsWith(trim($tagObject->nodeValue), '/* ]]> */')) ) {
 
 									// It's associated with the enqueued scripts or it's a (standalone) CDATA inline tag added via wp_localize_script()
 									// Skip it instead and if the CDATA is not standalone (e.g. not associated with any script tag), the loop will "stay" in the same combined group
@@ -394,6 +394,12 @@ class CombineJs
 						$finalJsTagAttrsOutput = trim($finalJsTagAttrsOutput);
 					}
 
+					// No async or defer? Add the preloading for the combined JS from the BODY
+					if ( ! $finalJsTagAttrsOutput && $docLocationScript === 'body' ) {
+						$finalJsTagAttrsOutput = ' data-wpacu-to-be-preloaded-basic=\'1\' ';
+						if ( ! defined('WPACU_REAPPLY_PRELOADING_FOR_COMBINED_JS') ) { define('WPACU_REAPPLY_PRELOADING_FOR_COMBINED_JS', true); }
+					}
+
 					$finalJsTag = <<<HTML
 <script {$finalJsTagAttrsOutput} id='wpacu-combined-js-{$docLocationScript}-group-{$groupNo}' {$typeAttr} src='{$finalTagUrl}'></script>
 HTML;
@@ -403,9 +409,9 @@ HTML;
 						$finalJsTag,
 						array(
 							'attrs'        => $extraAttrs,
-					        'doc_location' => $docLocationScript,
-					        'group_no'     => $groupNo,
-					        'src'          => $finalTagUrl
+							'doc_location' => $docLocationScript,
+							'group_no'     => $groupNo,
+							'src'          => $finalTagUrl
 						)
 					);
 
@@ -446,7 +452,7 @@ HTML;
 			$typeAttr = Misc::getScriptTypeAttribute();
 
 			if ($isDeferAppliedOnBodyCombineGroupNo > 0 && $domTag = ObjectCache::wpacu_cache_get('wpacu_html_dom_body_tag_for_js')) {
-				$strPart = "id='wpacu-combined-js-body-group-".$isDeferAppliedOnBodyCombineGroupNo."' $typeAttr ";
+				$strPart = "id='wpacu-combined-js-body-group-".$isDeferAppliedOnBodyCombineGroupNo."' ";
 
 				if (strpos($htmlSource, $strPart) === false) {
 					return $htmlSource; // something is funny, do not continue
@@ -835,7 +841,7 @@ JS;
 	public static function proceedWithJsCombine()
 	{
 		// not on query string request (debugging purposes)
-		if (array_key_exists('wpacu_no_js_combine', $_GET)) {
+		if ( isset($_REQUEST['wpacu_no_js_combine']) ) {
 			return false;
 		}
 

@@ -2,7 +2,7 @@ Yoast News SEO for Yoast SEO
 ==========================
 Requires at least: 5.6
 Tested up to: 5.8
-Stable tag: 12.9
+Stable tag: 13.1
 Requires PHP: 5.6.20
 Depends: Yoast SEO
 
@@ -31,21 +31,17 @@ You can find the [Yoast News SEO FAQ](https://kb.yoast.com/kb/category/news-seo/
 Changelog
 =========
 
-### 12.9: August 10th, 2021
-Bugfixes:
-* Fixes a bug where a duplicate News section would be shown in the Yoast sidebar in the post editor when Yoast SEO Premium is active in combination with WP 5.8.
-
-### 12.8: July 13th, 2021
+### 13.1: November 16th, 2021
 Enhancements:
-* Adds key/value pairs of all News SEO meta tags to our REST API.
-* Improves the performance of the news sitemap. Props to [archon810](https://github.com/archon810).
-
-Bugfixes:
-* Fixes a bug where a database query including duplicate column names would fail on certain database systems.
+* Huge performance improvement: moves the XML News sitemap to be based on our Indexables architecture. 
+* Removes images from the XML News sitemap as they serve no purpose here and this further improves performance.
 
 Other:
-* Adds a filter to override the decision to omit an item from the news sitemap. Props to [joneslloyd](https://github.com/joneslloyd).
-* Sets the minimum WordPress version to 5.6.
+* Excludes attachments and non-indexed post types from the possible post types to include in the News Sitemap.
+
+### 13.0: October 19th, 2021
+Enhancements:
+* Adds Schema Article News subtypes: `ReviewNewsArticle`, `AnalysisNewsArticle`, `AskPublicNewsArticle`, `BackgroundNewsArticle`, `OpinionNewsArticle`, and `ReportageNewsArticle`. 
 
 ### Earlier versions
 For the changelog of earlier versions, please refer to [the changelog on yoast.com](https://yoa.st/news-seo-changelog).

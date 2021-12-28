@@ -1,6 +1,7 @@
 <?php
 namespace WpAssetCleanUp;
 
+use WpAssetCleanUp\OptimiseAssets\CombineJs;
 use WpAssetCleanUp\OptimiseAssets\DynamicLoadedAssets;
 // [wpacu_pro]
 use WpAssetCleanUpPro\LoadExceptions;
@@ -323,7 +324,7 @@ class Main
 		// Fetch Assets AJAX Call? Make sure the output is as clean as possible (no plugins interfering with it)
 		// It can also be used for debugging purposes (via /?wpacu_clean_load) when you want to view all the CSS/JS
 		// that are loaded in the HTML source code before they are unloaded or altered in any way
-		if ( $this->isGetAssetsCall || array_key_exists( 'wpacu_clean_load', $_GET ) ) {
+		if ( $this->isGetAssetsCall || isset($_GET['wpacu_clean_load']) ) {
 			$wpacuCleanUp = new CleanUp();
 			$wpacuCleanUp->cleanUpHtmlOutputForAssetsCall();
 		}
@@ -379,12 +380,15 @@ class Main
 					return;
 				}
 
-				// Only place the market IF there's at least one preload
+				// Only place the market IF there's at least one preload OR combine JS is activated
 				$preloadsClass = new Preloads();
-				foreach ( array( 'styles', 'scripts' ) as $assetType ) {
-					if ( isset( $preloadsClass->preloads[ $assetType ] ) && ! empty( $preloadsClass->preloads[ $assetType ] ) ) {
-						echo ( $assetType === 'styles' ) ? Preloads::DEL_STYLES_PRELOADS : Preloads::DEL_SCRIPTS_PRELOADS;
-					}
+
+				if ( isset( $preloadsClass->preloads[ 'styles' ] ) && ! empty( $preloadsClass->preloads[ 'styles' ] ) ) {
+					echo Preloads::DEL_STYLES_PRELOADS;
+				}
+
+				if ( (isset( $preloadsClass->preloads[ 'scripts' ] ) && ! empty( $preloadsClass->preloads[ 'scripts' ] )) || CombineJs::proceedWithJsCombine() ) {
+					echo Preloads::DEL_SCRIPTS_PRELOADS;
 				}
 			}, 1 );
 
@@ -422,7 +426,7 @@ class Main
 				// Alter for debugging purposes; triggers before anything else
 				// e.g. you're working on a website and there is no Dashboard access and you want to determine the handle name
 				// if the handle name is not showing up, then the LINK stylesheet has been hardcoded (not enqueued the WordPress way)
-				if ( array_key_exists( 'wpacu_show_handle_names', $_GET ) ) {
+				if ( isset($_GET['wpacu_show_handle_names']) ) {
 					$styleTag = str_replace( '<link ', '<link data-wpacu-debug-style-handle=\'' . $tagHandle . '\' ', $styleTag );
 				}
 
@@ -441,7 +445,7 @@ class Main
 				// Alter for debugging purposes; triggers before anything else
 				// e.g. you're working on a website and there is no Dashboard access and you want to determine the handle name
 				// if the handle name is not showing up, then the SCRIPT has been hardcoded (not enqueued the WordPress way)
-				if ( array_key_exists( 'wpacu_show_handle_names', $_GET ) ) {
+				if ( isset($_GET['wpacu_show_handle_names']) ) {
 					$scriptTag = str_replace( '<script ', '<script data-wpacu-debug-script-handle=\'' . $tagHandle . '\' ', $scriptTag );
 				}
 
@@ -561,7 +565,7 @@ SQL;
 			}
 
 			// If assets management within the Dashboard is not enabled, an explanation message will be shown within the box unless the meta box is hidden completely
-			if ( ! $this->settings['hide_assets_meta_box'] ) {
+			if ( $this->settings['show_assets_meta_box'] ) {
 				$metaboxes->initMetaBox( 'manage_page_assets' );
 			}
 
@@ -842,7 +846,7 @@ SQL;
 			}
 
 			// e.g. for test/debug mode or AJAX calls (where all assets have to load)
-            if ( array_key_exists( 'wpacu_no_css_unload', $_GET ) ) {
+            if ( isset($_REQUEST['wpacu_no_css_unload']) ) {
 	            // [wpacu_pro]
                 // Don't forget (before preventing the unloading) to mark the ones that are set to be moved to BODY or HEAD
 	            // Make sure it is triggered even if the unload list is empty as the user might just want to move assets on this page
@@ -1033,7 +1037,7 @@ SQL;
 	 */
 	public function filterStylesSpecialCases()
 	{
-		if (array_key_exists('wpacu_no_css_unload', $_GET)) {
+		if ( isset($_REQUEST['wpacu_no_css_unload']) ) {
 			return;
 		}
 
@@ -1260,7 +1264,7 @@ SQL;
 		    }
 
 		    // e.g. for test/debug mode or AJAX calls (where all assets have to load)
-		    if ( array_key_exists( 'wpacu_no_js_unload', $_GET ) || $this->preventAssetsSettings() ) {
+		    if ( isset($_REQUEST['wpacu_no_js_unload']) || $this->preventAssetsSettings() ) {
 			    /* [wpacu_timing] */
 			    Misc::scriptExecTimer( 'filter_dequeue_scripts', 'end' ); /* [/wpacu_timing] */
 			    return;
@@ -1906,7 +1910,7 @@ SQL;
             return;
         }
 
-        if ($isFrontEndEditView && array_key_exists('elementor-preview', $_GET) && $_GET['elementor-preview']) {
+        if ($isFrontEndEditView && isset($_GET['elementor-preview']) && $_GET['elementor-preview']) {
             return;
         }
 
@@ -2241,7 +2245,8 @@ SQL;
 
 	        // Load exception: If the user is logged in (applies globally)
 	        $data['handle_load_logged_in'] = $this->getHandleLoadLoggedIn();
-            $data['handle_notes'] = $this->getHandleNotes();
+
+	        $data['handle_notes'] = $this->getHandleNotes();
 
 	        // [wpacu_pro]
             // Are there any RegEx matched rules?
@@ -2283,7 +2288,7 @@ SQL;
 
 	        ObjectCache::wpacu_cache_set('wpacu_settings_frontend_data', $data);
             $this->parseTemplate('settings-frontend', $data, true);
-        } elseif ($isDashboardEditView && ! array_key_exists('wpacu_just_hardcoded', $_GET)) {
+        } elseif ($isDashboardEditView && ! isset($_GET['wpacu_just_hardcoded'])) {
             // AJAX call (not the classic WP one) from the WP Dashboard
             // Send the altered value that has the initial position too
 
@@ -2302,7 +2307,7 @@ SQL;
             $list['unloaded_plugins'] = isset($GLOBALS['wpacu_filtered_plugins']) ? $GLOBALS['wpacu_filtered_plugins'] : array();
             // [/wpacu_pro]
 
-	        if (array_key_exists('wpacu_print', $_GET)) {
+	        if ( isset($_GET['wpacu_print']) ) {
 	            echo '<!-- '."\n".print_r(Misc::filterList($list), true)."\n".' -->';
             }
 
@@ -2314,7 +2319,7 @@ SQL;
 	            // and we need the non-minified version of the DOM (e.g. to determine the position of the elements)
 	            exit();
             });
-        } elseif ($isDashboardEditView && array_key_exists('wpacu_just_hardcoded', $_GET)) {
+        } elseif ($isDashboardEditView && isset($_GET['wpacu_just_hardcoded'])) {
 	        // AJAX call just for the hardcoded assets
             echo self::START_DEL_HARDCODED . '{wpacu_hardcoded_assets}' . self::END_DEL_HARDCODED; // Make the user aware of any hardcoded CSS/JS (if any)
 
@@ -2363,6 +2368,16 @@ SQL;
      */
     public function ajaxGetJsonListCallback()
     {
+	    if ( ! isset($_POST['wpacu_nonce']) ) {
+		    echo 'Error: The security nonce was not sent for verification. Location: '.__METHOD__;
+		    return;
+	    }
+
+	    if ( ! wp_verify_nonce($_POST['wpacu_nonce'], 'wpacu_ajax_get_loaded_assets_nonce') ) {
+		    echo 'Error: The nonce security check has failed. Location: '.__METHOD__;
+		    return;
+	    }
+
         $postId  = (int)Misc::getVar('post', 'post_id'); // if any (could be home page for instance)
         $pageUrl = Misc::getVar('post', 'page_url'); // post, page, custom post type, home page etc.
 
@@ -2550,7 +2565,9 @@ SQL;
 	    $data = apply_filters('wpacu_pro_get_bulk_unloads', $data);
 		// [/wpacu_pro]
 
-	    $data = $this->alterAssetObj($data);
+	    // DO NOT alter any position as it's already verified and set
+        // This AJAX call is for printing the assets that were already fetched
+	    $data = $this->alterAssetObj($data, false);
 
 	    $data['wpacu_type'] = $type;
 
@@ -2674,6 +2691,11 @@ SQL;
 	 */
 	public function ajaxLoadRestrictedPageAreaCallback()
     {
+	    if ( ! isset( $_POST['wpacu_nonce'] ) || ! wp_verify_nonce( $_POST['wpacu_nonce'], 'wpacu_ajax_load_page_restricted_area_nonce' ) ) {
+		    echo 'Error: The security nonce is not valid.';
+		    exit();
+	    }
+
 	    $postId = (int)Misc::getVar('post', 'post_id'); // if any (could be home page for instance)
 
         $data = array();
@@ -2708,6 +2730,11 @@ SQL;
 	 */
 	public function ajaxPrintLoadedHardcodedAssets()
     {
+        if ( ! isset( $_POST['wpacu_nonce'] ) || ! wp_verify_nonce( $_POST['wpacu_nonce'], 'wpacu_print_loaded_hardcoded_assets_nonce' ) ) {
+	        echo 'Error: The security nonce is not valid.';
+	        exit();
+        }
+
 	    $wpacuListH        = Misc::getVar('post', 'wpacu_list_h');
 	    $wpacuSettingsJson = base64_decode(Misc::getVar('post', 'wpacu_settings'));
 	    $wpacuSettings     = (array)json_decode($wpacuSettingsJson, ARRAY_A);
@@ -2746,14 +2773,13 @@ SQL;
 	 */
 	public function ajaxCheckExternalUrlsForStatusCode()
     {
-	    if (! isset($_POST['action'], $_POST['wpacu_check_urls'])) {
-		    echo 'Error: The post parameters are not the right ones.';
+	    if ( ! isset( $_POST['wpacu_nonce'] ) || ! wp_verify_nonce( $_POST['wpacu_nonce'], 'wpacu_ajax_check_external_urls_nonce' ) ) {
+		    echo 'Error: The security nonce is not valid.';
 		    exit();
 	    }
 
-	    // Check nonce
-	    if ( ! isset( $_POST['wpacu_ajax_check_external_urls_nonce'] ) || ! wp_verify_nonce( $_POST['wpacu_ajax_check_external_urls_nonce'], 'wpacu_ajax_check_external_urls_nonce' ) ) {
-		    echo 'Error: The security nonce is not valid.';
+	    if (! isset($_POST['action'], $_POST['wpacu_check_urls'])) {
+		    echo 'Error: The post parameters are not the right ones.';
 		    exit();
 	    }
 
@@ -2793,6 +2819,16 @@ SQL;
 	 */
 	public function ajaxFetchActivePluginsIcons()
 	{
+		if ( ! isset($_POST['wpacu_nonce']) ) {
+			echo 'Error: The security nonce was not sent for verification. Location: '.__METHOD__;
+			return;
+		}
+
+		if ( ! wp_verify_nonce($_POST['wpacu_nonce'], 'wpacu_fetch_active_plugins_icons') ) {
+			echo 'Error: The security check has failed. Location: '.__METHOD__;
+			return;
+		}
+
 		if (! isset($_POST['action'])) {
 			return;
 		}
@@ -2840,7 +2876,8 @@ SQL;
             jQuery(document).ready(function($) {
                 var wpacuDataToSend = {
                     'action': '<?php echo WPACU_PLUGIN_ID.'_fetch_active_plugins_icons'; ?>',
-                    'wpacu_force_fetch': false // default (does not re-download the icons from WordPress.org)
+                    'wpacu_force_fetch': false, // default (does not re-download the icons from WordPress.org)
+                    'wpacu_nonce': '<?php echo wp_create_nonce('wpacu_fetch_active_plugins_icons'); ?>'
                 };
 
                 <?php
@@ -2863,7 +2900,7 @@ SQL;
      * @param $data
      * @return mixed
      */
-    public function alterAssetObj($data)
+    public function alterAssetObj($data, $alterPosition = true)
     {
         $siteUrl = get_site_url();
 
@@ -2881,11 +2918,13 @@ SQL;
 		            $data['all']['styles'][$key]->wp = false;
 	            }
 
-	            if (in_array($obj->handle, $this->assetsInFooter['styles'])) {
-		            $data['all']['styles'][$key]->position = 'body';
-	            } else {
-		            $data['all']['styles'][$key]->position = 'head';
-	            }
+	            if ($alterPosition) {
+	                if ( in_array( $obj->handle, $this->assetsInFooter['styles'] ) ) {
+		                $data['all']['styles'][ $key ]->position = 'body';
+	                } else {
+		                $data['all']['styles'][ $key ]->position = 'head';
+	                }
+                }
 
 	            // [wpacu_pro]
 	            $data['all']['styles'][$key] = apply_filters('wpacu_pro_get_position_new', $data['all']['styles'][$key], 'styles');
@@ -2945,13 +2984,15 @@ SQL;
 		            $data['all']['scripts'][$key]->wp = false;
 	            }
 
-	            $initialScriptPos = ObjectCache::wpacu_cache_get($obj->handle, 'wpacu_scripts_initial_positions');
+	            if ($alterPosition) {
+		            $initialScriptPos = ObjectCache::wpacu_cache_get( $obj->handle, 'wpacu_scripts_initial_positions' );
 
-                if ($initialScriptPos === 'body' || in_array($obj->handle, $this->assetsInFooter['scripts'])) {
-                    $data['all']['scripts'][$key]->position = 'body';
-                } else {
-                    $data['all']['scripts'][$key]->position = 'head';
-                }
+		            if ( $initialScriptPos === 'body' || in_array( $obj->handle, $this->assetsInFooter['scripts'] ) ) {
+			            $data['all']['scripts'][ $key ]->position = 'body';
+		            } else {
+			            $data['all']['scripts'][ $key ]->position = 'head';
+		            }
+	            }
 
                 // [wpacu_pro]
 	            $data['all']['scripts'][$key] = apply_filters('wpacu_pro_get_position_new', $data['all']['scripts'][$key], 'scripts');
@@ -3253,7 +3294,7 @@ SQL;
 	public function ajaxGetExternalFileSize()
 	{
 		// Check nonce
-		if ( ! isset( $_POST['wpacu_ajax_check_remote_file_size_nonce'] ) || ! wp_verify_nonce( $_POST['wpacu_ajax_check_remote_file_size_nonce'], 'wpacu_ajax_check_remote_file_size_nonce' ) ) {
+		if ( ! isset( $_POST['wpacu_nonce'] ) || ! wp_verify_nonce( $_POST['wpacu_nonce'], 'wpacu_ajax_check_remote_file_size_nonce' ) ) {
 			echo 'Error: The security nonce is not valid.';
 			exit();
 		}
@@ -3694,7 +3735,7 @@ SQL;
 	    }
 
 	    // The asset list is hidden via query string: /?wpacu_no_frontend_show
-	    if (array_key_exists('wpacu_no_frontend_show', $_GET)) {
+	    if (isset($_REQUEST['wpacu_no_frontend_show'])) {
 	        return false;
         }
 

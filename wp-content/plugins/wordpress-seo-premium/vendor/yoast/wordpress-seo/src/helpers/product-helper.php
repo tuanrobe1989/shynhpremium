@@ -13,11 +13,11 @@ class Product_Helper {
 	 * @return string
 	 */
 	public function get_product_name() {
-		
+		if ( $this->is_premium() ) {
 			return 'Yoast SEO Premium';
-	
+		}
 
-		
+		return 'Yoast SEO';
 	}
 
 	/**
@@ -36,5 +36,18 @@ class Product_Helper {
 	 */
 	public function is_premium() {
 		return \defined( 'WPSEO_PREMIUM_FILE' );
+	}
+
+	/**
+	 * Gets the Premium version if defined, returns null otherwise.
+	 *
+	 * @return string|null The Premium version or null when premium version is not defined.
+	 */
+	public function get_premium_version() {
+		if ( \defined( 'WPSEO_PREMIUM_VERSION' ) ) {
+			return \WPSEO_PREMIUM_VERSION;
+		}
+
+		return null;
 	}
 }

@@ -14,7 +14,7 @@ class Debug
 	 */
 	public function __construct()
 	{
-		if (array_key_exists('wpacu_debug', $_GET)) {
+		if (isset($_GET['wpacu_debug'])) {
 		    if (is_admin()) { // Dashboard view
 			    add_action('admin_init', array($this, 'showDebugOptionsDashPrepare'), PHP_INT_MAX);
 			    add_action('wp_loaded', array($this, 'showDebugOptionsDashOutput'), PHP_INT_MAX);
@@ -97,62 +97,19 @@ class Debug
 		$styleAttrType = Misc::getStyleTypeAttribute();
 		?>
 		<style <?php echo $styleAttrType; ?>>
-			#wpacu-debug-options {
-                background: white;
-                width: 90%;
-                margin: 10px;
-				border: 1px solid #cdcdcd;
-				border-radius: 5px;
-				padding: 12px;
-			}
-
-            #wpacu-debug-options p {
-                margin-bottom: 15px;
-            }
-
-            #wpacu-debug-options ul.wpacu-options {
-                list-style: none;
-                padding-left: 0;
-                margin-top: 0;
-                margin-left: 8px;
-            }
-
-            #wpacu-debug-options ul.wpacu-options li {
-                line-height: normal;
-                font-size: inherit;
-            }
-
-			#wpacu-debug-options ul.wpacu-options li label {
-				cursor: pointer;
-                font-size: inherit;
-			}
-
-            #wpacu-debug-options table td {
-                padding: 20px;
-            }
-
-            ul#wpacu-debug-timing {
-                margin-left: 0;
-                padding-left: 0;
-            }
-
-			ul#wpacu-debug-timing > li {
-				list-style: none;
-				padding-left: 20px;
-			}
-
-			ul#wpacu-debug-timing li > ul > li {
-				list-style: disc;
-				padding-left: 0;
-			}
+			<?php echo file_get_contents(WPACU_PLUGIN_DIR.'/assets/wpacu-debug.css'); ?>
 		</style>
+
+        <script <?php echo Misc::getScriptTypeAttribute(); ?>>
+	        <?php echo file_get_contents(WPACU_PLUGIN_DIR.'/assets/wpacu-debug.js'); ?>
+        </script>
 
 		<div id="wpacu-debug-options">
             <table>
                 <tr>
-                    <td valign="top">
+                    <td style="vertical-align: top;">
                         <p>View the page with the following options <strong>disabled</strong> (for debugging purposes):</p>
-                        <form>
+                        <form method="post">
                             <ul class="wpacu-options">
                             <?php
                             foreach ($allDebugOptions as $debugKey => $debugText) {
@@ -160,26 +117,81 @@ class Debug
                                 <li>
                                     <label><input type="checkbox"
                                                   name="<?php echo $debugKey; ?>"
-                                                  <?php if (array_key_exists($debugKey, $_GET)) { echo 'checked="checked"'; } ?> /> &nbsp;<?php echo $debugText; ?></label>
+                                                  <?php if ( ! empty($_GET) && array_key_exists($debugKey, $_GET) ) { echo 'checked="checked"'; } ?> /> &nbsp;<?php echo $debugText; ?></label>
                                 </li>
                             <?php
                             }
                             ?>
                             </ul>
+
+                            <hr />
+
+                            <strong>Preview page: Thick plugins for unloading</strong><br >
+                            <p><small>By default, any already unloaded plugins from "Plugins Manager" will be selected here (unless you already submitted the form with a different selection).</small></p>
+
+                            <?php if (isset($GLOBALS['wpacu_filtered_plugins']) && ! empty($GLOBALS['wpacu_filtered_plugins'])) { ?>
+                                <p><small>If you want ALL plugins to load back, just deselect everything from the list below and submit the form.</small></p>
+                            <?php } ?>
+
+                            <table>
+                                <?php
+                                $activePlugins = PluginsManager::getActivePlugins();
+                                uasort($activePlugins, function($a, $b) {
+	                                return strcmp($a['title'], $b['title']);
+                                });
+
+                                $pluginsIcons = Misc::getAllActivePluginsIcons();
+
+                                foreach ($activePlugins as $pluginData) {
+	                                $pluginTitle = $pluginData['title'];
+	                                $pluginPath = $pluginData['path'];
+	                                list($pluginDir) = explode('/', $pluginPath);
+                                    ?>
+                                        <tr class="wpacu_plugin_row_debug_unload <?php if (isset($GLOBALS['wpacu_filtered_plugins']) && in_array($pluginPath, $GLOBALS['wpacu_filtered_plugins'])) { echo 'wpacu_plugin_row_debug_unload_marked'; } ?>">
+                                            <td style="padding: 0; width: 46px; text-align: center;">
+                                                <label style="cursor: pointer; margin: -12px 0 0 12px;" class="wpacu_plugin_unload_debug_container" for="wpacu_filter_plugin_<?php echo $pluginPath; ?>">
+                                                    <input type="checkbox"
+                                                           class="wpacu_plugin_unload_debug_checkbox"
+                                                           style="cursor: pointer; width: 20px; height: 20px;"
+                                                           id="wpacu_filter_plugin_<?php echo $pluginPath; ?>"
+                                                           name="wpacu_filter_plugins[]"
+                                                           value="<?php echo $pluginPath; ?>"
+			                                            <?php if (isset($GLOBALS['wpacu_filtered_plugins']) && in_array($pluginPath, $GLOBALS['wpacu_filtered_plugins'])) { echo 'checked="checked"'; } ?> />
+                                                    <span class="wpacu_plugin_unload_debug_checkbox_checkmark"></span>
+                                                </label>
+                                            </td>
+                                            <td style="padding: 5px; text-align: center; cursor: pointer;">
+                                                <label style="cursor: pointer;" for="wpacu_filter_plugin_<?php echo $pluginPath; ?>">
+                                                    <?php if(isset($pluginsIcons[$pluginDir])) { ?>
+                                                        <img width="40" height="40" alt="" src="<?php echo $pluginsIcons[$pluginDir]; ?>" />
+                                                    <?php } else { ?>
+                                                        <div><span style="font-size: 34px; width: 34px; height: 34px;" class="dashicons dashicons-admin-plugins"></span></div>
+                                                    <?php } ?>
+                                                </label>
+                                            </td>
+                                            <td style="padding: 10px;">
+                                                <label for="wpacu_filter_plugin_<?php echo $pluginPath; ?>" style="cursor: pointer;"><span class="wpacu_plugin_title" style="font-weight: 500;"><?php echo $pluginTitle; ?></span></label><br />
+                                                <span class="wpacu_plugin_path" style="font-style: italic;"><small><?php echo $pluginPath; ?></small></span>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                }
+                                ?>
+                            </table>
                             <div>
                                 <input type="submit"
-                                       value="View page with the chosen options turned off" />
+                                       value="Preview this page with the changes made above" />
                             </div>
                             <input type="hidden" name="wpacu_debug" value="on" />
                         </form>
                     </td>
-                    <td valign="top">
+                    <td style="vertical-align: top;">
                         <?php
                         // [wpacu_pro]
                         if (isset($GLOBALS['wpacu_filtered_plugins']) && $wpacuFilteredPlugins = $GLOBALS['wpacu_filtered_plugins']) {
                             sort($wpacuFilteredPlugins);
                             ?>
-                            <p><strong>Unloaded plugins:</strong> The following plugins were unloaded on this page using the rules from "Plugins Manager" (within <?php echo WPACU_PLUGIN_TITLE; ?>'s menu):</p>
+                            <p><strong>Unloaded plugins:</strong> The following plugins were unloaded on this page as they have matching unload rules.</p>
                             <ul>
                                 <?php
                                 foreach ($wpacuFilteredPlugins as $filteredPlugin) {
@@ -316,65 +328,10 @@ class Debug
 		?>
         <!-- [ASSET CLEANUP PRO DEBUG] -->
         <style <?php echo Misc::getStyleTypeAttribute(); ?>>
-            #wpacu-debug-admin-area {
-                line-height: 20px;
-                background: white;
-                padding: 15px 15px 30px;
-                bottom: 0;
-                z-index: 100000000;
-                width: 100%;
-                border-top: 1px solid #e7e7e7;
-            }
-
-            #wpacu-debug-plugins-unloaded .wpacu_plugin_icon > img {
-                -webkit-border-radius: 3px;
-                /* Chrome, Safari, Opera */
-                -moz-border-radius: 3px;
-                /* Firefox */
-                border-radius: 3px;
-            }
-            #wpacu-debug-plugins-unloaded .wpacu_plugin_icon > div {
-                background: #efefef;
-                border: #cdcdcd;
-                border-radius: 3px;
-                width: 20px;
-                height: 20px;
-                vertical-align: middle;
-                position: relative;
-                text-align: center;
-            }
-            #wpacu-debug-plugins-unloaded .wpacu_plugin_icon > div > span {
-                font-size: 20px;
-                color: #b3b3b3;
-                top: 50%;
-                vertical-align: middle;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 20px;
-                height: 20px;
-                position: absolute;
-            }
+            <?php echo file_get_contents(WPACU_PLUGIN_DIR.'/assets/wpacu-debug.css'); ?>
         </style>
-        <script type="text/javascript">
-            function wpacuChangeDebugAdminArea()
-            {
-                var $adminMenuWrap = jQuery('#adminmenuwrap'),
-                    $wpacuDebugAdminArea = jQuery('#wpacu-debug-admin-area');
-
-                if ($adminMenuWrap.length > 0 && $adminMenuWrap.is(':visible')) {
-                    $wpacuDebugAdminArea.css('margin-left', $adminMenuWrap.width() + 'px');
-                } else {
-                    $wpacuDebugAdminArea.css('margin-left', '0');
-                }
-            }
-
-            window.addEventListener('resize', function() {
-                wpacuChangeDebugAdminArea();
-            });
-
-            jQuery(document).ready(function($) {
-                wpacuChangeDebugAdminArea();
-            });
+        <script <?php echo Misc::getScriptTypeAttribute(); ?>>
+            <?php echo file_get_contents(WPACU_PLUGIN_DIR.'/assets/wpacu-debug.js'); ?>
         </script>
         <?php
         $wpacuUnloadedPluginsStatus = false;

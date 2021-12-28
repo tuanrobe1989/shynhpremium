@@ -340,7 +340,7 @@ class MainPro
     {
         // Do not show it if 'Hide "Asset CleanUp Pro: CSS & JavaScript Manager" meta box' is checked in 'Settings' -> 'Plugin Usage Preferences'
         // Or if the user has no right to view this (e.g. an editor that does not have admin rights, thus no business with any of the plugin's settings)
-        if (Main::instance()->settings['hide_assets_meta_box'] || ! Menu::userCanManageAssets()) {
+        if ( ! Main::instance()->settings['show_assets_meta_box'] || ! Menu::userCanManageAssets() ) {
             return;
         }
 
@@ -875,7 +875,7 @@ class MainPro
 
 		foreach (array('async', 'defer') as $attrType) {
 			if (in_array($handle, $attrs[$attrType]) && (! in_array($handle, $this->scriptsAttrsNoLoad[$attrType]))) {
-				if (array_key_exists('wpacu_no_'.$attrType, $_GET)) {
+				if ( ! empty($_REQUEST) && array_key_exists('wpacu_no_'.$attrType, $_REQUEST) ) {
 					continue; // prevent adding any async/defer attributes for debugging purposes
 				}
 				$tag = str_replace(' src=', ' '.$attrType.'=\''.$attrType.'\' src=', $tag);

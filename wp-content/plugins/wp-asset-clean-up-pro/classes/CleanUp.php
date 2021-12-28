@@ -532,7 +532,7 @@ class CleanUp
 	 */
 	public function cleanUpHtmlOutputForAssetsCall()
 	{
-		if (array_key_exists('wpacu_clean_load', $_GET)) {
+		if (isset($_GET['wpacu_clean_load'])) {
 			// No Admin Bar
 			add_filter('show_admin_bar', '__return_false', PHP_INT_MAX);
 		}

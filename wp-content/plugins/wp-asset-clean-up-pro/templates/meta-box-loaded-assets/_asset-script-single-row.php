@@ -108,7 +108,7 @@ if (isset($data['handle_rows_contracted']['scripts'][$data['row']['obj']->handle
 
 	        include '_asset-script-single-row/_position.php';
 
-	        if (isset($data['row']['obj']->src) && $data['row']['obj']->src) {
+	        if (isset($data['row']['obj']->src) && trim($data['row']['obj']->src)) {
 		        $extraInfo[] = __('File Size:', 'wp-asset-clean-up') . ' <em>' . $data['row']['obj']->size . '</em>';
 	        }
 

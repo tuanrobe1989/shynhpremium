@@ -38,7 +38,7 @@ if ( $showMatchMediaFeature && ! $linkHasDistinctiveMediaAttr ) {
 ?>
     <!-- [wpacu_pro] -->
     <?php
-    if (isset($data['row']['obj']->src) && $data['row']['obj']->src !== '') {
+    if (isset($data['row']['obj']->src) && trim($data['row']['obj']->src) !== '') {
     ?>
         <div style="margin: 0 0 15px;">
             <?php

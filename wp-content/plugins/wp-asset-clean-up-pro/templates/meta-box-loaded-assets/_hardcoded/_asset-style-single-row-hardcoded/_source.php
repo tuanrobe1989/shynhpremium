@@ -6,7 +6,7 @@ if ( ! isset($data) ) {
 	exit; // no direct access
 }
 
-if (isset($data['row']['obj']->src, $data['row']['obj']->srcHref) && $data['row']['obj']->src !== '' && $data['row']['obj']->srcHref) {
+if (isset($data['row']['obj']->src, $data['row']['obj']->srcHref) && trim($data['row']['obj']->src) !== '' && $data['row']['obj']->srcHref) {
 	$isExternalSrc = true;
 
 	if (\WpAssetCleanUp\Misc::getLocalSrc($data['row']['obj']->src)

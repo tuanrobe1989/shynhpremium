@@ -197,7 +197,7 @@ class Positions
 	 */
 	public function markStylesToLoadInNewPosition($unloadedList)
 	{
-		if (array_key_exists('wpacu_no_css_position_change', $_GET)) {
+		if ( isset($_REQUEST['wpacu_no_css_position_change']) ) {
 			return;
 		}
 
@@ -484,7 +484,7 @@ JS;
 	 */
 	public function markScriptsToLoadInNewPosition()
 	{
-		if (array_key_exists('wpacu_no_js_position_change', $_GET)) {
+		if ( isset($_REQUEST['wpacu_no_js_position_change']) ) {
 			return;
 		}
 

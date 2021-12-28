@@ -386,7 +386,6 @@ if ( ! class_exists( 'BSF_License_Manager' ) ) {
 		 * @param int    $product_id Product ID.
 		 */
 		public function get_remote_license_status( $purchase_key, $product_id ) {
-			return true;
 
 			$transient_key = $product_id . '_license_status';
 
@@ -705,7 +704,7 @@ if ( ! class_exists( 'BSF_License_Manager' ) ) {
 
 			$product_id = $args['product_id'];
 
-			if ( isset( $product_id ) ) {
+			if ( ! isset( $product_id ) ) {
 				return $links;
 			}
 

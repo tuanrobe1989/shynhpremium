@@ -84,7 +84,7 @@ class WooCommerceSubscriber implements Event_Manager_Aware_Subscriber_Interface 
 				$events['switch_theme']      = 'delete_cache_empty_cart';
 			}
 
-			$events['wp_enqueue_scripts']         = 'show_empty_product_gallery_with_delayJS';
+			$events['wp_head']                    = 'show_empty_product_gallery_with_delayJS';
 			$events['rocket_delay_js_exclusions'] = 'show_notempty_product_gallery_with_delayJS';
 		}
 
@@ -513,6 +513,9 @@ class WooCommerceSubscriber implements Event_Manager_Aware_Subscriber_Interface 
 	 */
 	private function product_has_gallery_images() {
 		$product = wc_get_product( get_the_ID() );
+		if ( empty( $product ) ) {
+			return false;
+		}
 		return ! empty( $product->get_gallery_image_ids() );
 	}
 
@@ -534,8 +537,7 @@ class WooCommerceSubscriber implements Event_Manager_Aware_Subscriber_Interface 
 			return;
 		}
 
-		$custom_css = '.woocommerce-product-gallery{ opacity: 1 !important; }';
-		wp_add_inline_style( 'woocommerce-layout', $custom_css );
+		echo '<style>.woocommerce-product-gallery{ opacity: 1 !important; }</style>';
 	}
 
 	/**
@@ -547,7 +549,7 @@ class WooCommerceSubscriber implements Event_Manager_Aware_Subscriber_Interface 
 	 *
 	 * @return array
 	 */
-	public function show_notempty_product_gallery_with_delayJS( array $exclusions = [] ) {
+	public function show_notempty_product_gallery_with_delayJS( $exclusions = [] ): array {
 		global $wp_version;
 
 		if ( ! $this->delayjs_html->is_allowed() ) {
@@ -562,20 +564,31 @@ class WooCommerceSubscriber implements Event_Manager_Aware_Subscriber_Interface 
 			return $exclusions;
 		}
 
-		$exclusions[] = '/jquery-?[0-9.]*(.min|.slim|.slim.min)?.js';
-		$exclusions[] = '/woocommerce/assets/js/zoom/jquery.zoom(.min)?.js';
-		$exclusions[] = '/woocommerce/assets/js/photoswipe/';
-		$exclusions[] = '/woocommerce/assets/js/flexslider/jquery.flexslider(.min)?.js';
-		$exclusions[] = '/woocommerce/assets/js/frontend/single-product(.min)?.js';
+		$exclusions_gallery = [
+			'/jquery-?[0-9.]*(.min|.slim|.slim.min)?.js',
+			'/woocommerce/assets/js/zoom/jquery.zoom(.min)?.js',
+			'/woocommerce/assets/js/photoswipe/',
+			'/woocommerce/assets/js/flexslider/jquery.flexslider(.min)?.js',
+			'/woocommerce/assets/js/frontend/single-product(.min)?.js',
+		];
 
 		if (
 			isset( $wp_version )
 			&&
 			version_compare( $wp_version, '5.7', '<' )
 		) {
-			$exclusions[] = '/jquery-migrate(.min)?.js';
+			$exclusions_gallery[] = '/jquery-migrate(.min)?.js';
 		}
 
-		return $exclusions;
+		/**
+		 * Filters the JS files excluded from delay JS when WC product gallery has images.
+		 *
+		 * @since 3.10.2
+		 *
+		 * @param array $exclusions_gallery Array of excluded filepaths.
+		 */
+		$exclusions_gallery = apply_filters( 'rocket_wc_product_gallery_delay_js_exclusions', $exclusions_gallery );
+
+		return array_merge( $exclusions, $exclusions_gallery );
 	}
 }

@@ -5,10 +5,10 @@ Plugin URI: https://wordpress.org/plugins/wp-post-page-clone
 Description: A plugin to generate duplicate post or page with contents and it's settings.
 Author: Gaurang Sondagar
 Author URI: http://gaurangsondagar99.wordpress.com/
-Version: 1.1
+Version: 1.2
 Text Domain: wp-post-page-clone
 Requires at least: 4.0
-Tested up to: 5.4.1
+Tested up to: 5.8.2
 Domin Path: Languages
 License: GPLV2
 
@@ -59,18 +59,22 @@ if(!function_exists('wp_post_page_clone')) {
             * get Nonce value
             */
             $nonce = $_REQUEST['nonce'];
-
-            if ( !isset( $_GET['post']) || (!isset($_REQUEST['action']) && 'wp_post_page_clone' != $_REQUEST['action'] ) ) {
-                    wp_die('No post or page to clone has been supplied!, Please try again!');
-            }
-
             $post_id = (isset($_GET['post']) ? intval($_GET['post']) : intval($_POST['post']));
 
-            if(wp_verify_nonce( $nonce, 'wp-post-page-clone-'.$post_id) && current_user_can('edit_posts')){
+            // check access permissions to even consider the cloning....
+            if( ! wp_verify_nonce( $nonce, 'wp-post-page-clone-'.$post_id) || ! current_user_can( 'edit_posts' )) {
+                wp_die("You don't have permission to be here", "wp-post-page-clone");
+            }
 
-                $post = get_post( $post_id );
-                $current_user = wp_get_current_user();
-                $post_author = $current_user->ID;
+            if ( !isset( $_GET['post']) || (!isset($_REQUEST['action']) && 'wp_post_page_clone' != $_REQUEST['action'] ) ) {
+                wp_die("No post or page to clone has been supplied!, Please try again!", "wp-post-page-clone");
+            }
+            
+            $post = get_post( $post_id );
+            $current_user = wp_get_current_user();
+            $post_author = $current_user->ID;
+
+            if( current_user_can('delete_others_posts') || current_user_can( 'setup_network' ) || (current_user_can('edit_posts') && $post_author == $post->post_author)){
 
                 if (isset( $post ) && $post != null) {
 
@@ -122,7 +126,7 @@ if(!function_exists('wp_post_page_clone')) {
                 }
 
             } else {
-                wp_die('Security issue occure, Please try again!.');
+                wp_die('Security issue occure, Please try again!.', 'wp-post-page-clone');
             }
 
     }
@@ -142,8 +146,11 @@ if(!function_exists('wp_post_page_link')) {
      */
     function wp_post_page_link( $actions, $post ) {
 
-            if (current_user_can('edit_posts')) {
-                    $actions['clone'] = '<a href="admin.php?action=wp_post_page_clone&amp;post=' . $post->ID . '&amp;nonce='.wp_create_nonce( 'wp-post-page-clone-'.$post->ID ).'" title="'.__('Clone Post and Page', 'wp-post-page-clone').'" rel="permalink">'.__('Click To Clone', 'wp-post-page-clone').'</a>';
+            $current_user = wp_get_current_user();
+            $post_author = $current_user->ID;
+            $allowed_roles = array( 'editor', 'administrator' );
+            if ( array_intersect( $allowed_roles, $current_user->roles ) ) {
+                    $actions['clone'] = '<a '.$post_author.'==='.$post->post_author.' href="admin.php?action=wp_post_page_clone&amp;post=' . $post->ID . '&amp;nonce='.wp_create_nonce( 'wp-post-page-clone-'.$post->ID ).'" title="'.__('Clone Post and Page', 'wp-post-page-clone').'" rel="permalink">'.__('Click To Clone', 'wp-post-page-clone').'</a>';
             }
 
             return $actions;

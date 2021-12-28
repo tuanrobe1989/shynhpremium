@@ -81,17 +81,23 @@ function mo_api_authentication_main_menu() {
 	}
 	?>
 
-<div>
-<?php
+	<div>
+	<?php
 
-if( get_option('mo_rest_api_show_popup') && 'licensing' !== $currenttab ) {
-	mo_api_show_popup();
-}
+	$mo_rest_api_today = date("Y-m-d H:i:s");
+	$mo_rest_api_date = "2021-12-31 23:59:59";
 
-if(get_option('mo_save_settings')==1){
-	update_option('mo_save_settings',2);
-}
-?>
+	if ( $mo_rest_api_today <= $mo_rest_api_date )
+			Mo_API_Authentication_Admin_Menu::show_bfs_note();
+
+	if( get_option('mo_rest_api_show_popup') && 'licensing' !== $currenttab ) {
+		mo_api_show_popup();
+	}
+
+	if(get_option('mo_save_settings')==1){
+		update_option('mo_save_settings', 2);
+	}
+	?>
 	<div>
 	<?php 
 	Mo_API_Authentication_Admin_Menu::mo_api_auth_show_menu( $currenttab );
@@ -139,6 +145,43 @@ jQuery('#mo_api_close').click(function(){
 
 class Mo_API_Authentication_Admin_Menu {
 	
+	public static function show_bfs_note()
+	{
+        ?>
+            <form name="f" method="post" action="" id="mo_rest_api_bfs_note_form">
+            	<?php wp_nonce_field('mo_rest_api_bfs_note_form','mo_rest_api_bfs_note_form_field'); ?>
+				<input type="hidden" name="option" value="mo_rest_api_bfs_note_message"/>
+                <div class="notice notice-info"style="padding-right: 38px;position: relative;border-color:red; background-color: #0c082f;
+					transform: scaleX(1);
+					background-image: url('<?php echo esc_attr(dirname(plugin_dir_url( __FILE__ )));?>/images/3px-tile.png');"><h4><center><i class="fa fa-gift" style="font-size:50px;color:red;"></i>&nbsp;&nbsp;
+				<big><font style="color:white; font-size:30px;"><b>END OF YEAR SALE: </b><b style="color:yellow;">UPTO 50% OFF!</b></font> <br><br></big>
+				<h4><font style="color:white; font-size:20px;">Upgrade Now to unlock all the features and premium benefits.</font>
+				<font style="color:white; font-size:20px;"> <a href="https://plugins.miniorange.com/wordpress-rest-api-authentication" target="_blank"> Click here</a> to check out all the deals. <br><br>Contact us at oauthsupport@xecurify.com for more details.</font></center></h4>
+				<p style="text-align: center; font-size: 40px; margin-top: 0px; color:white;" id="demo"></p>
+				</div>
+			</form>
+		<script>
+			var countDownDate = <?php echo esc_attr(strtotime('Dec 31, 2021 23:59:59')) ?> * 1000;
+			var now = <?php echo esc_attr(time()) ?> * 1000;
+			var x = setInterval(function() {
+				now = now + 1000;
+				var distance = countDownDate - now;
+				var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+				var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+				document.getElementById("demo").innerHTML = days + "d " + hours + "h " +
+					minutes + "m " + seconds + "s ";
+				if (distance < 0) {
+					clearInterval(x);
+					document.getElementById("demo").innerHTML = "EXPIRED";
+				}
+			}, 1000);
+		</script>
+		<?php
+	}
+
+
 	public static function mo_api_auth_show_menu( $currenttab ) { 
 		 ?>
 
@@ -151,9 +194,9 @@ class Mo_API_Authentication_Admin_Menu {
 	       	<h1>
 	            miniOrange API Authentication&nbsp
 				<a class="add-new-h2" href="admin.php?page=mo_api_authentication_settings&tab=licensing"  style="background: #ffac11;color: #212121;border-color:white">Premium Plans</a>
-	           	<a class="add-new-h2" href="https://forum.miniorange.com/" target="_blank">Ask questions on our forum</a>
-				<a class="add-new-h2" href="https://faq.miniorange.com/" target="_blank">FAQ</a>
-				<a class="add-new-h2" href="https://plugins.miniorange.com/wordpress-rest-api-authentication" target="_blank" style="background-color: #A61407;color:white;border-color:white">Learn more</a>
+	           	<a class="add-new-h2" href="https://forum.miniorange.com/" target="_blank" rel="noopener">Ask questions on our forum</a>
+				<a class="add-new-h2" href="https://faq.miniorange.com/" target="_blank" rel="noopener">FAQ</a>
+				<a class="add-new-h2" href="https://plugins.miniorange.com/wordpress-rest-api-authentication" target="_blank" rel="noopener" style="background-color: #A61407;color:white;border-color:white">Learn more</a>
 				<a class="add-new-h2" href="admin.php?page=mo_api_authentication_settings&tab=postman" style="background-color: #ff6c37;color:white;border-color:white">Postman Samples</a>
 	       	</h1>
        	</div>
