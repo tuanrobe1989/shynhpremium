@@ -341,11 +341,12 @@ kenEvents.serviceBlock = function () {
                     margin: 24,
                 },
                 1440: {
-                    items: 6,
+                    items: 5,
                     margin: 32,
                 },
             }
         });
+        jQuery('.service__aside .service__cate figure').matchHeight();
     }
 
     //Slider Services

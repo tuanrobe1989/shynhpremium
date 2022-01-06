@@ -9,6 +9,8 @@ switch ($design):
   case 2:
     get_template_part('inc/views/blog-design.view');
     break;
+  case 3:
+    get_template_part('inc/views/services/single.services.view');
   case 4:
     get_template_part('inc/views/services/services.view');
     break;

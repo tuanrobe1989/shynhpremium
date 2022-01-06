@@ -3,11 +3,6 @@ $term = get_queried_object();
 ?>
 <section id="service" class="service">
     <div class="container">
-        <h2 class="maintit service--tit"><?php single_cat_title() ?>Dịch Vụ Nổi Bật</h2>
-        <?php get_template_part('inc/views/services/aside.view'); ?>
-        <?php get_template_part('inc/views/services/aside2.view', '', array(
-            'term' => $term
-        )); ?>
         <?php if (have_posts()) :  ?>
             <h1 class="maintit service--tit"><?php single_cat_title() ?></h1>
             <div class="service__list">

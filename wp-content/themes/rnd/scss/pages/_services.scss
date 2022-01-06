@@ -1,85 +1,136 @@
-.service{
-    &--tit{
-        
-    }
-    &__aside{
+.service {
+    &--tit {}
+
+    &__aside {
         padding: 5rem 0 5rem 0;
     }
-    &__cate{
-        img{
+
+    .owl-item {
+        &.active {
+            .service__cate {
+                figure {
+                height: 300px;
+                }
+            }
+        }
+
+        .service__cate {
+            figure {
+                height: 300px;
+            }
+        }
+    }
+
+    &__cate {
+        display: block;
+
+        &:hover {
+            figure {
+                background: $yellow;
+            }
+        }
+
+        figure {
+            border: 1px solid $gray;
+            padding: 1rem;
+            border-radius: 5px;
+            @include transition_default(0.3s);
+        }
+
+        img {
             margin: 0 auto;
         }
-        &--tit{
+
+        &--tit {
             text-align: center;
         }
     }
-    &__list{
+
+    &__list {
         width: 100%;
-        @include breakpoint-up(sm){
+
+        @include breakpoint-up(sm) {
             @include flex;
             @include flex-wrap;
             margin: 80px 0 0 0;
         }
-        &__item{
+
+        &__item {
             width: 100%;
             max-width: 480px;
             text-align: center;
             padding: 16px 0;
             box-sizing: border-box;
-            @include breakpoint-up(sm){
+
+            @include breakpoint-up(sm) {
                 padding: 32px 16px;
                 border-left: 1px solid $grey;
                 width: 50%;
                 max-width: 100%;
             }
-            @include breakpoint-up(md){
-                @include flex;
-                @include align-items(center);
+
+            @include breakpoint-up(md) {
+                // @include flex;
+                // @include align-items(center);
                 padding: 32px;
             }
-            @include breakpoint-up(lg){
+
+            @include breakpoint-up(lg) {
                 width: 33.333%;
-                &:nth-child(3n + 1){
+
+                &:nth-child(3n + 1) {
                     border-left: 0;
                 }
             }
-            &--tit{
+
+            &--tit {
                 padding: 16px 0 0;
-                @include breakpoint-up(md){
-                    font-size: 2.5rem;
+                line-height: 1.5;
+                @include transition_default(0.3s);
+
+                @include breakpoint-up(md) {
+                    font-size: 2rem;
                     letter-spacing: 1px;
                 }
+
+                &:hover {
+                    color: $yellow;
+                }
             }
-            &--thumb{
-                border-radius: 50%;
-                height: 220px;
-                width: 220px;
+
+            &--thumb {
                 position: relative;
                 display: block;
                 margin: 0 auto;
                 padding: 10px;
                 background: $grey;
-                img{
-                    position: absolute;
-                    top: calc(50% - 10px);
-                    left: calc(50% - 10px);
-                    @include transform(translate(calc(-50% + 10px),calc(-50% + 10px)));
-                    height: calc(100% - 20px);
-                    max-width: calc(100% - 20px);
-                    border-radius: 50%;
+                border: 1px solid $gray;
+                border-radius: 5px;
+                @include transition_default(0.3s);
+
+                &:hover {
+                    background-color: $yellow;
+                }
+
+                figure {
+                    display: block;
+                    display: flex;
+                }
+
+                img {
                     border: 1px solid $white;
+                    width: 100%;
+                    height: auto;
                 }
             }
-            &--content{
-                @include breakpoint-up(md){
-                    width: calc(100% - 220px);
-                    padding: 0 0 0 16px;
-                }
-                .button-more{
+
+            &--content {
+
+                .button-more {
                     margin: 16px auto 0 auto;
                 }
             }
-            
+
         }
     }
 }

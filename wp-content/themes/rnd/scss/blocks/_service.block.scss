@@ -56,6 +56,7 @@
             margin: 5px 0;
             padding: 16px 5px;
             border: 1px solid $gray;
+
             @include breakpoint-up(md) {
                 @include flex;
                 @include flex-direction(column);
@@ -92,15 +93,40 @@
     }
 }
 
-.serviceCategory{
+.owl-item {
+    &.active {
+        .serviceCategory__item {
+            height: auto;
+        }
+    }
+
+    .serviceCategory__item {
+        height: 300px;
+    }
+}
+
+.serviceCategory {
     margin: 5rem 0 3rem 0;
-    &__item{
-        &--img{
+    &__item {
+        display: block;
+        &:hover{
+            figure{
+                background: $yellow;
+            }
+        }
+        figure{
+            border: 1px solid $gray;
+            padding: 1rem;
+            border-radius: 5px;
+            @include transition_default(0.3s);
+        }
+        &--img {
             border: 2px solid $grey;
             width: 100%;
             height: auto;
         }
-        &--tit{
+
+        &--tit {
             display: block;
             width: 100%;
             padding: 1rem 0;
