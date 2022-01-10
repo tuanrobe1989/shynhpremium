@@ -245,6 +245,9 @@ kenEvents.popup = function () {
         var buttonID = jQuery(this).attr('data-id');
         jQuery('#' + buttonID).addClass('animate__animated animate__fadeIn');
     })
+    jQuery('.open__service__popup').click(function(){
+        jQuery('.service__popup').addClass('animate__animated animate__fadeIn');
+    })
     jQuery('.kpopup__buttonclose').click(function () {
         jQuery(this).closest('.kpopup').removeClass('animate__animated animate__fadeIn');
         var dataCookie = jQuery(this).closest('.kpopup').attr('data-cookie');

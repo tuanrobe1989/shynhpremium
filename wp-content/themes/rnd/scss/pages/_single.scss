@@ -42,3 +42,94 @@
     }
   }
 }
+.notetop{
+  border: 1px solid $yellow;
+  @include align-items(center);
+  padding: 0.5rem 2rem;
+  text-align: center;
+  @include breakpoint-up(sm){
+    text-align: left;
+  }
+  .wp-block-column{
+    margin-left: 0 !important;
+  }
+  p{
+    text-transform: uppercase;
+  }
+  a{
+    color: $yellow !important;
+    text-decoration: underline;
+  } 
+}
+.gform{
+  &--tit{
+    font-family: $font2;
+    font-size: 2rem;
+    color: $yellow;
+    @include breakpoint-up(md){
+      font-size: 3rem;
+    }
+  }
+  .contactForm__input{
+    border: 1px solid $black_light !important;
+    padding: 2rem 1.5rem !important;
+    margin: 1.2rem 0;
+    font-size: 1.4rem;
+    &.required{
+      border-color: red;
+    }
+  }
+  .contactForm__submit{
+    background: $yellow;
+    color: $white;
+    font-family: $font2 !important;
+    font-size: 2rem;
+    cursor: pointer;
+    background: url('../images/icon-calendar.png') no-repeat $black left 1rem center;
+    background-size: 32px 32px;
+    border: 2px solid $black;
+    position: relative;
+    &::before{
+      content: '';
+      width: 60px;
+      height: 100%;
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: url('../images/icon-calendar.png') no-repeat $black center;
+      background-size: 32px 32px;
+    }
+    &:hover{
+      background-color: $yellow;
+    }
+  }
+}
+.open__service__popup{
+  margin: 2rem 1rem !important;
+  a{
+      background-color: $yellow;
+      border-radius: 0;
+      position: relative;
+      padding-left: 70px;
+      border: 2px solid $black;
+      text-transform: uppercase;
+      font-family: $font2;
+      font-weight: 700;
+      &:hover{
+        border-color: $yellow;
+        color: $white;
+      }
+      &::before{
+        content: '';
+        width: 60px;
+        height: 100%;
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: url('../images/icon-calendar.png') no-repeat $black center;
+        background-size: 32px 32px;
+      }
+  }
+}

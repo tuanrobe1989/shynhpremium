@@ -203,7 +203,7 @@ function field_crm_service_id()
             endforeach;
             ?>
         </select>
-<?php
+        <?php
     endif;
 }
 
@@ -260,3 +260,48 @@ function prefix_register_product_routes()
 }
 
 add_action('rest_api_init', 'prefix_register_product_routes');
+
+
+add_action('wp_footer', 'add_poupform_single_post_func');
+function add_poupform_single_post_func()
+{
+    global $post;
+    if (is_single()) :
+        $sevice_popup = get_field('sevice_popup', $post);
+        if ($sevice_popup == 2) :
+            $service_id = get_field('general_crm_fields', $post);
+        ?>
+            <div id="service-popup-<?php echo $post->ID ?>" data-action="service-popup-<?php echo $post->ID ?>" class="gform kpopup service__popup">
+                <span class="kpopup__bg"></span>
+                <div class="container">
+                    <div class="kpopup__round contact__round">
+                        <span class="kpopup__buttonclose lazy" data-bg="<?php bloginfo('template_directory') ?>/images/icon-close.png"></span>
+                        <div class="contact__thanks">
+                            <div class="kpopup__content">
+                                <strong class="gform--tit"><?php _e('THÔNG TIN ĐẶT LỊCH', SHYNH); ?></strong>
+                                <form action="" method="post" class="contactForm" id="contact__popup" name="contact__popup">
+                                    <div class="form__input">
+                                        <input type="text" name="contactForm__name" id="contactForm__name" class="contactForm__name contactForm__input" placeholder="Vui lòng họ tên">
+                                    </div>
+                                    <div class="form__input">
+                                        <input type="text" name="contactForm__phone" id="contactForm__phone" class="contactForm__phone contactForm__input" placeholder="Vui lòng nhập số điện thoại">
+                                    </div>
+                                    <div class="form__input service__popup__submit">
+                                        <textarea name="contactForm__description" id="contactForm__description" cols="30" rows="5" class="contactForm__input appointment__register__input area-input" placeholder="Nội Dung Đặt Lịch" spellcheck="false"></textarea>
+                                    </div>
+                                    <input type="submit" name="contactForm__submit" id="contactForm__submit" class="button contactForm__submit" value="<?php _e('Đặt Lịch', SHYNH) ?>">
+                                    <input type="hidden" name="nonce" class="nonce" value="<?php echo wp_create_nonce('add_contact_nonce') ?>">
+                                    <input type="hidden" name="contactForm__category" class="contactForm__category" value="33">
+                                    <input type="hidden" name="contactForm__service" class="contactForm__service" value="<?php echo $service_id ?>">
+                                    <input type="hidden" name="contactForm__title" class="contactForm__title" value="<?php echo $post->post_title ?>">
+                                    <input type="hidden" name="popup__id" class="popup__id" value="service-popup-<?php echo $post->ID ?>">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<?php
+        endif;
+    endif;
+}

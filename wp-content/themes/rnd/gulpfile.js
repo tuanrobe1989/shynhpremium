@@ -110,7 +110,7 @@ function myCssAddOns(cb) {
 // BrowserSync
 function serveSync(done) {
   browserSync.init({
-      open: 'external',
+      open: false,
       host: 'shynhpremium.localhost',
       proxy: 'shynhpremium.localhost',
       port: 8080 // for work mamp
