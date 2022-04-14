@@ -270,6 +270,7 @@ function add_poupform_single_post_func()
         $sevice_popup = get_field('sevice_popup', $post);
         if ($sevice_popup == 2) :
             $service_id = get_field('general_crm_fields', $post);
+
         ?>
             <div id="service-popup-<?php echo $post->ID ?>" data-action="service-popup-<?php echo $post->ID ?>" class="gform kpopup service__popup">
                 <span class="kpopup__bg"></span>
@@ -286,10 +287,12 @@ function add_poupform_single_post_func()
                                     <div class="form__input">
                                         <input type="text" name="contactForm__phone" id="contactForm__phone" class="contactForm__phone contactForm__input" placeholder="Vui lòng nhập số điện thoại">
                                     </div>
-                                    <div class="form__input service__popup__submit">
+                                    <div class="form__input">
                                         <textarea name="contactForm__description" id="contactForm__description" cols="30" rows="5" class="contactForm__input appointment__register__input area-input" placeholder="Nội Dung Đặt Lịch" spellcheck="false"></textarea>
                                     </div>
-                                    <input type="submit" name="contactForm__submit" id="contactForm__submit" class="button contactForm__submit" value="<?php _e('Đặt Lịch', SHYNH) ?>">
+                                    <div class="service__popup__submit">
+                                        <input type="submit" name="contactForm__submit" id="contactForm__submit" class="button contactForm__submit" value="<?php _e('Đặt Lịch', SHYNH) ?>">
+                                    </div>
                                     <input type="hidden" name="nonce" class="nonce" value="<?php echo wp_create_nonce('add_contact_nonce') ?>">
                                     <input type="hidden" name="contactForm__category" class="contactForm__category" value="33">
                                     <input type="hidden" name="contactForm__service" class="contactForm__service" value="<?php echo $service_id ?>">
@@ -305,3 +308,33 @@ function add_poupform_single_post_func()
         endif;
     endif;
 }
+
+function change_page_menu_classes($menu)
+{
+    global $post;
+    $cate_slug = '';
+    $category = [];
+    $cat_tmp = function($category){
+        $category_parent_id = $category[0]->category_parent;
+        if ($category_parent_id != 0) {
+            $category_parent = get_term($category_parent_id, 'category');
+            $cate_slug = $category_parent->slug;
+        } else {
+            $cate_slug = $category[0]->slug;
+        }
+        return $cate_slug;
+    };
+    if (is_category()) :
+        $category = get_the_category();
+        $cate_slug = $cat_tmp($category);
+    endif;
+    if(is_single()):
+        $category = get_the_category($post->ID);
+        $cate_slug = $cat_tmp($category);
+    endif;
+    if (is_category('dich-vu') || $cate_slug == 'dich-vu') :
+        $menu = str_replace('menu-item-346', 'menu-item-346 current-menu-item', $menu); // add the current_page_parent class to the page you want
+    endif;
+    return $menu;
+}
+add_filter('nav_menu_css_class', 'change_page_menu_classes', 10, 2);

@@ -3,7 +3,7 @@ $term = get_queried_object();
 ?>
 <section id="service" class="service">
     <div class="container">
-        <h2 class="maintit service--tit"><?php single_cat_title() ?>Dịch Vụ Nổi Bật</h2>
+        <h2 class="maintit service--tit"><?php single_cat_title() ?><?php _e('Dịch Vụ Nổi Bật','SHYNH') ?></h2>
         <?php get_template_part('inc/views/services/aside.view'); ?>
         <?php get_template_part('inc/views/services/aside2.view', '', array(
             'term' => $term

@@ -152,8 +152,8 @@
 //Main Popup Cover
 .main__popup {
   .contactForm {
-    margin: 18.6rem auto 0 auto;
-    max-width: 70%;
+    margin: 44.6rem auto 0 auto;
+    max-width: 100%;
   }
 
   .kpopup__round {
@@ -174,14 +174,15 @@
     border-radius: 5px;
   }
   .contactForm__input {
-    padding: 0.8rem 0.5rem !important;
+    padding: 1.2rem 0.9rem !important;
     border: 1px solid #2e1e5d !important;
     border-radius: 5px;
+    width: 100%;
   }
   .contactForm__submit {
     // max-width: 150px;
-    height: 27px;
-    width: 118px;
+    height: 33px;
+    width: 160px;
     border-radius: 20px;
     // padding: 0.5rem 0;
     color: #172345;
@@ -192,6 +193,7 @@
     background: url(../images/button-popup.png) no-repeat center;
     background-size: 100% 100%;
     cursor: pointer;
+    margin-top: 2.5rem;
     &:hover {
       // background: $yellow;
       // color: $white;

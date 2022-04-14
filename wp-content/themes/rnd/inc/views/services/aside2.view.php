@@ -6,7 +6,7 @@ $categories = get_categories(array(
 ));
 if ($categories) :
 ?>
-    <h3 class="maintit service--tit"><?php single_cat_title() ?><?php _e('Danh Mục Dịch Vụ', SHYNH) ?></h3>
+    <h3 class="maintit service--tit"><?php _e('Danh Mục Dịch Vụ', SHYNH) ?></h3>
     <aside class="serviceCategory owl-carousel owl-theme">
         <?php
         $i = 0;

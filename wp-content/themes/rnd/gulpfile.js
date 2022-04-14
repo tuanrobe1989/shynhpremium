@@ -66,10 +66,10 @@ function myCss(cb) {
     .pipe(plumber({
       errorHandler: notify.onError("Error: <%= error.message %>")
     }))
-    .pipe(sass({
-      outputStyle: 'compressed'
-    }))
-    .pipe(cssmin())
+    // .pipe(sass({
+    //   outputStyle: 'compressed'
+    // }))
+    // .pipe(cssmin())
     .pipe(rename({
       suffix: '.min'
     }))
