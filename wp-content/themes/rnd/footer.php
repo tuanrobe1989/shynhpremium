@@ -1,10 +1,35 @@
 <footer class="footer animate__animated animate__fadeIn">
     <div class="container">
-        <?php
-        if (is_active_sidebar('sidebar-footer')) :
-            dynamic_sidebar('sidebar-footer');
-        endif;
-        ?>
+        <div id="custom_html-2" class="widget_text widget widget_custom_html">
+            <div class="textwidget custom-html-widget">
+                <p><strong class="h3 footer__tit">Công ty TNHH Shynh House</strong><br>591 Sư Vạn Hạnh, Phường 13, Quận 10</p>
+                <p>Email: <a href="mailto:cskh@shynhpremium.vn" title="email - shynh premium">cskh@shynhpremium.vn</a> | <a href="tel:1900989800" title="hotline - shynh premium">1900989800</a></p>
+                <p class="footer__socials">
+                    <a href="https://www.youtube.com/channel/UC-Fo0YkOlGUDFnBPVIDtnUQ" target="_blank" title="Shynh Premium Youtube">
+                        <i class="fab fa-youtube-square"></i>
+                    </a>
+                    <a href="https://www.facebook.com/thammyviensaigonshynhpremium" target="_blank" title="Shynh Premium Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="https://www.instagram.com/shynhpremium/" target="_blank" title="Shynh Premium Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@vienthammyshynhpremium?" target="_blank" title="Shynh Premium Tiktok">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div id="custom_html-3" class="widget_text widget widget_custom_html">
+            <div class="textwidget custom-html-widget"><img src="http://shynhpremium.vn/wp-content/themes/rnd/images/icon-shynh-black.png" alt="shynh premium" title="shynh premium" class="footer__logo">
+                <p>Mã số thuế: 0313140051 do Sở Kế hoạch đầu tư <br>TP.HCM cấp ngày 13/02/2015</p>
+            </div>
+        </div>
+        <div id="custom_html-4" class="widget_text widget widget_custom_html">
+            <div class="textwidget custom-html-widget">
+                <?php echo do_shortcode('[promotion-form]') ?>
+            </div>
+        </div>
     </div>
     <div class="footer__addressWrap">
         <div class="container">
